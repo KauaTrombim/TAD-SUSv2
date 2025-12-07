@@ -23,6 +23,10 @@ void heap_apagar(Heap **heap){
     if(heap == NULL){
         return;
     }
+    for(int i = 0; i<=(*heap)->ultimo; i++){
+        free((*heap)->arvore[i]);
+        (*heap)->arvore[i] = NULL;
+    }
     free(*heap);
     *heap = NULL;
 }
@@ -100,6 +104,8 @@ bool heap_inserir(Heap *heap, Paciente *pac, int priori){
     }
     if(heap_cheia(heap)){
         if(heap->arvore[heap->ultimo]->situacao < priori){
+            printf("O paciente: %s de ID: %d foi removido devido a lotação da fila e sua prioridade ser menor.\n", paciente_getNome(heap->arvore[heap->ultimo]->pac), paciente_getID(heap->arvore[heap->ultimo]->pac));
+            free(heap->arvore[heap->ultimo]);
             heap->ultimo--;
         }else{
             printf("A fila de espera está lotada.\n");
@@ -107,6 +113,9 @@ bool heap_inserir(Heap *heap, Paciente *pac, int priori){
         }
     }
     NO* item = malloc(sizeof(NO));
+    if(item == NULL){
+        return false;
+    }
     time_t t = time(NULL);
     item->horaInsercao = t;
     item->pac = pac;
