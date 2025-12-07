@@ -56,3 +56,10 @@ int paciente_getID(Paciente *p){
     return -1; //Código de erro
 }
 
+char *paciente_getNome(Paciente *p){
+    if(p != NULL){
+        return p->nome;
+    }
+    printf("Paciente_getNome: Erro ao acessar o paciente\n");
+    return NULL;
+}
