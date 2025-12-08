@@ -9,6 +9,8 @@
 
     typedef struct HEAP Heap;
     typedef struct NO NO;
+    typedef struct avl AVL; 
+    Paciente* avl_buscar_paciente(AVL *avl, int id);
 
     Heap *heap_criar();
     void heap_apagar(Heap **heap);
@@ -20,5 +22,7 @@
     bool heap_inserir(Heap *heap, Paciente *pac, int priori);
     void heap_listar(Heap *heap); 
     Paciente *no_getPac(NO* item);
+    bool heap_salvar(Heap *heap);
+    bool heap_carregar(Heap *heap, AVL *lista_pacientes);
 
 #endif
