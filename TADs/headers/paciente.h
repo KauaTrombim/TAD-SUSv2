@@ -11,4 +11,5 @@
     char *paciente_getNome(Paciente *p);
     bool paciente_naFila(Paciente *p)
     void paciente_listar(Paciente *p);
+    HISTORICO *paciente_gethistorico(PACIENTE *);
 #endif

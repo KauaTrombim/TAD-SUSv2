@@ -6,6 +6,7 @@ struct pac{
     int id;
     char *nome; //Usamos ponteiro para alocar somente o espaço necessário no cadastro
     bool naFila;
+    HISTORICO *historico;
 };
 
 
@@ -28,12 +29,14 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
     p->nome = nome;
     //p->historico = historico_criar(); //Temos que incluir essa função
     p->naFila = true; //Marca o paciente como na fila já na inserção
+    p->historico = historico_criar();
     return p;
 }
 
 bool paciente_apagar(Paciente **p){
     if(p != NULL && *p != NULL){
         free((*p)->nome);
+        historico_apagar(&(*paciente)->historico);
         free(*p);
         return true;
     }
@@ -80,4 +83,11 @@ void paciente_listar(Paciente *p){
         printf("Esta na fila: %s\n", state);
         printf("------------------------------------------");
     }
+}
+
+HISTORICO *paciente_gethistorico(PACIENTE *paciente) {
+    if (paciente == NULL) {
+        return NULL;
+    }
+    return paciente->historico;
 }
