@@ -51,11 +51,11 @@ void heap_fixdown(Heap *heap, int indice){
     }
     int maior = indice;
     if(2*indice+1 <= heap->ultimo){
-        if(heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0 || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
+        if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+1;
     }
     if(2*indice+2 <= heap->ultimo){
-        if(heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0 || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
+        if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+2;
     }
     if(maior!=indice){
