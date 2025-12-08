@@ -129,13 +129,6 @@ int main(void) {
                     printf("------------SISTEMA DE MORTE------------\n\n");
                     break;
                 }
-                //Apagar paciente para liberar memória para novo paciente
-                ok = paciente_apagar(&paciente);
-                if(!ok) {
-                    printf("ERRO ao apagar paciente!\n");
-                    printf("------------SISTEMA DE MORTE------------\n\n");
-                    break;
-                }
 
                 printf("Paciente removido com sucesso!\n");
                 printf("------------SISTEMA DE MORTE------------\n\n");
@@ -143,9 +136,19 @@ int main(void) {
                 break;
             case 3:
                 //Listar pacientes
+                avl_listar(lista_pacientes);
                 break;
             case 4:
                 //Buscar por ID
+                printf("Id do paciente: ");
+                scanf("%d",&id);
+                paciente = avl_buscar_paciente(lista_pacientes, id);
+                if(paciente == NULL){
+                    printf("Paciente nao encontrado\n");
+                }
+                else{
+                    paciente_listar(paciente);
+                }
                 break;
             case 5:
                 //Mostra a triagem e os pacientes nela
