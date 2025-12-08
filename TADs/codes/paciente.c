@@ -1,6 +1,5 @@
 #include "../headers/setup.h"
-
-
+#include "../headers/avl.h"
 #include "../headers/paciente.h"
 
 struct pac{
@@ -9,7 +8,9 @@ struct pac{
     bool naFila;
 };
 
-Paciente *paciente_criar(char *nome, int id) {
+
+
+Paciente *paciente_criar(AVL *avl, char *nome, int id) {
     //Alocação do ponteiro para paciente
     Paciente *p = malloc(sizeof(Paciente));
     if (p == NULL) {
@@ -18,34 +19,35 @@ Paciente *paciente_criar(char *nome, int id) {
     }
     //Caso o id seja menor que 0 será gerado um novo id
     if(id<0){
-        //p->id = registro_gerar_id(lista);
+        p->id = avl_gerar_id(avl);
     }else{
         //O caso contrário é quando o paciente foi carregado da lista salva no JSON
         //Portanto não precisamos criar novos ids 
         p->id = id;
     }
     p->nome = nome;
+    //p->historico = historico_criar(); //Temos que incluir essa função
     p->naFila = true; //Marca o paciente como na fila já na inserção
     return p;
 }
 
-void paciente_apagar(Paciente **p){
+bool paciente_apagar(Paciente **p){
     if(p != NULL && *p != NULL){
         free((*p)->nome);
         free(*p);
-        return;
+        return true;
     }
     printf("Paciente_apagar: Erro ao acessar o paciente\n");
-    return;
+    return false;
 }
 
-void paciente_mudar_situacao_fila(Paciente *p, bool naFila){
+bool paciente_mudar_situacao_fila(Paciente *p, bool naFila){
     if(p != NULL){
         p->naFila = naFila;
-        return;
+        return true;
     }
     printf("Paciente_situacao_fila: Erro ao acessar o paciente");
-    return;
+    return false;
 }
 
 int paciente_getID(Paciente *p){
@@ -62,4 +64,20 @@ char *paciente_getNome(Paciente *p){
     }
     printf("Paciente_getNome: Erro ao acessar o paciente\n");
     return NULL;
+}
+
+bool paciente_naFila(Paciente *p){
+    if(p != NULL){
+        return p->naFila;
+    }
+}
+
+void paciente_listar(Paciente *p){
+    if(p != NULL){  
+        printf("ID: %d\n", p->id);
+        printf("Nome: %s\n", p->nome);
+        char *state = (p->naFila) ? "Sim" : "Nao";
+        printf("Esta na fila: %s\n", state);
+        printf("------------------------------------------");
+    }
 }

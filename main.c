@@ -9,9 +9,11 @@
 int main(void) {
     bool ok;
     //A lista é inicializada e os dados são carregados
-    LISTA_PACIENTE *lista_pacientes;
-    lista_pacientes = lista_paciente_inicializar();
-    carregar_lista(lista_pacientes);
+    AvL *lista_pacientes;
+    //lista_pacientes = avl_carregar_dados();
+    lista_pacientes = avl_criar();
+    //carregar_lista(lista_pacientes);
+
     if (lista_pacientes == NULL) {
         printf("ERRO ao criar lista de pacientes!\n");
         return 1;
@@ -26,11 +28,17 @@ int main(void) {
         printf("Erro ao inicializar a triagem!");
         return 1;
     }
-    printf("Bien venido manito!");
+    printf("Bem vindo ao TAD SUS V2!\n");
     int op = 0;
     do {
         // Escolhemos adicionar mais uma opção, "3-Inserir paciente na fila", para o caso de querermos inserir um paciente já cadastrado na lista, sem ter que mudar o funcionamento do TAD lista_paciente.
-        printf("\nMenu:\n1-Registrar paciente\n2-Remover paciente\n3-Lista de pacientes\n4-Buscar paciente\n5-Mistrar fila de espera\n6-Dar alta ao paciente\n7-Sair\n");
+        printf("\nMenu:\n1-Registrar paciente\n
+            2-Remover paciente\n
+            3-Lista de pacientes\n
+            4-Buscar paciente\n
+            5-Mistrar fila de espera\n
+            6-Dar alta ao paciente\n
+            7-Sair\n");
         printf("Digite a opção desejada: ");
         scanf("%d",&op);
         Paciente *paciente;
@@ -47,14 +55,14 @@ int main(void) {
                 scanf("%s", nome);
                 //Cria paciente com o nome dado, id -1 para identificação de que
                 //ele é um novo paciente
-                paciente = paciente_criar(nome, lista_pacientes, -1);
+                paciente = paciente_criar(lista_pacientes, nome, -1);
                 if(paciente == NULL) {
                     printf("ERRO ao criar paciente!\n");
                     printf("------------REGISTRO DE PACIENTE------------\n\n");
                     break;
                 }
                 //Paciente é guardado na lista geral
-                ok = lista_paciente_inserir(lista_pacientes, paciente);
+                ok = avl_inserir_paciente(lista_pacientes, paciente);
                 if(!ok) {
                     printf("ERRO ao inserir paciente na lista de pacientes!\n");
                     printf("------------REGISTRO DE PACIENTE------------\n\n");
@@ -63,27 +71,28 @@ int main(void) {
                 //Paciente é inserido na fila de triagem para ser atendido
                 char priori[14];
                 bool flag = 0;
+                int prioridade;
                 while(!flag){
                     printf("Digite a prioridade do paciente: ");
                     scanf("%s", priori);
                     if(!strcmp(priori, "Emergência") || !strcmp(priori, "emergência")){
-                        int prioridade = 4;
+                        prioridade = 4;
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Muito urgente") || !strcmp(priori, "muito urgente")){
-                        int prioridade = 3;
+                        prioridade = 3;
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Urgente") || !strcmp(priori, "urgente")){
-                        int prioridade = 2;
+                        prioridade = 2;
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Pouco urgente") || !strcmp(priori, "pouco urgente")){
-                        int prioridade = 1;
+                        prioridade = 1;
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Não urgência") || !strcmp(priori, "não urgência")){
-                        int prioridade = 0;
+                        prioridade = 0;
                         flag = 1;
                     }else{
                         printf("Erro ao interpretar a situação do paciente!\n");
@@ -107,7 +116,7 @@ int main(void) {
                 printf("Id do paciente: ");
                 scanf("%d",&id);
                 //Busca do paciente na lista para sua remoção
-                paciente = lista_paciente_buscar(lista_pacientes, id);
+                paciente = avl_buscar_paciente(lista_pacientes, id);
                 if(paciente == NULL) {
                     printf("ERRO ao procurar paciente!\n");
                     printf("------------SISTEMA DE MORTE------------\n\n");

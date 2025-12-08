@@ -1,17 +1,22 @@
-all: paciente.o main.o
-	gcc paciente.o main.o -o main -std=c99 -Wall
+CC = gcc
+CFLAGS = -std=c99 -Wall
+OBJS = main.o paciente.o avl.o
+all: $(OBJS)
+	$(CC) $(OBJS) -o main $(CFLAGS)
 
-#ReRun, ajuda no desenvolvimento
 rrun: clean all run
 
-paciente.o:
-	gcc -c ./TADs/codes/paciente.c -o ./TADs/codes/paciente.o -std=c99 -Wall
+main.o: main.c ./TADs/headers/paciente.h ./TADs/headers/avl.h
+	$(CC) -c main.c -o main.o $(CFLAGS)
 
-main.o:
-	gcc -c main.c -o main.o -std=c99 -Wall
+paciente.o: ./TADs/codes/paciente.c ./TADs/headers/paciente.h
+	$(CC) -c ./TADs/codes/paciente.c -o paciente.o $(CFLAGS)
+
+avl.o: ./TADs/codes/avl.c ./TADs/headers/avl.h
+	$(CC) -c ./TADs/codes/avl.c -o avl.o $(CFLAGS)
 
 run:
 	./main
 
 clean:
-	rm *.o
+	rm -f *.o main
