@@ -4,7 +4,7 @@
 
 struct pac{
     int id;
-    char *nome; //Usamos ponteiro para alocar somente o espaço necessário no cadastro
+    char nome[100];
     bool naFila;
     HISTORICO *historico;
 };
@@ -26,8 +26,8 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
         //Portanto não precisamos criar novos ids 
         p->id = id;
     }
-    p->nome = nome;
-    //p->historico = historico_criar(); //Temos que incluir essa função
+    strncpy(p->nome, nome, 100);
+    p->historico = historico_criar(); //Temos que incluir essa função
     p->naFila = true; //Marca o paciente como na fila já na inserção
     p->historico = historico_criar();
     return p;
@@ -35,7 +35,6 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
 
 bool paciente_apagar(Paciente **p){
     if(p != NULL && *p != NULL){
-        free((*p)->nome);
         historico_apagar(&(*p)->historico);
         free(*p);
         return true;
@@ -82,7 +81,7 @@ void paciente_imprimir(Paciente *p){
         printf("Nome: %s\n", p->nome);
         char *state = (p->naFila) ? "Sim" : "Nao";
         printf("Esta na fila: %s\n", state);
-        printf("------------------------------------------");
+        
     }
 }
 

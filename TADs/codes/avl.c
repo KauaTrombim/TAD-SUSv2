@@ -226,6 +226,7 @@ void listar(NO *raiz){
     if(raiz != NULL){
         listar(raiz->esq);
         paciente_imprimir(raiz->paciente);
+        printf("-----------------------\n");
         listar(raiz->dir);
     }
 }

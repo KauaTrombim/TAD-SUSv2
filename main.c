@@ -32,7 +32,7 @@ int main(void) {
         printf("Erro ao inicializar a triagem!");
         return 1;
     }
-    printf("Bem vindo ao TAD SUS V2!\n");
+    printf("-------Bem vindo ao TAD SUS V2!-------\n");
     int op = 0;
     do {
         // Escolhemos adicionar mais uma opção, "3-Inserir paciente na fila", para o caso de querermos inserir um paciente já cadastrado na lista, sem ter que mudar o funcionamento do TAD lista_paciente.
@@ -40,6 +40,10 @@ int main(void) {
         printf("Digite a opção desejada: ");
         scanf("%d",&op);
         Paciente *paciente;
+
+        char a;
+        while ((a = getchar()) != '\n' && a != EOF); //consome lixo
+
         int id;
         //Executa alguma das ações de aocrdo com a entrada do usuário
         switch (op) {
@@ -47,10 +51,13 @@ int main(void) {
                 //Registrar paciente
                 //Agora precisamos verificar se o paciente já existe ou não
                 //Entra na triagem de qualquer forma.
-                printf("------------REGISTRO DE PACIENTE------------\n");
+                printf("\n------------REGISTRO DE PACIENTE------------\n");
                 char nome[100];
-                printf("Insira o nome do paciente: ");
-                scanf("%s", nome);
+                printf("->Insira o nome do paciente (max: 99 caracteres): ");
+                
+                
+                fgets(nome, 100, stdin);
+                nome[strcspn(nome, "\n")] = '\0';
                 //Cria paciente com o nome dado, id -1 para identificação de que
                 //ele é um novo paciente
                 paciente = paciente_criar(lista_pacientes, nome, -1);
@@ -67,18 +74,27 @@ int main(void) {
                     break;
                 }
                 //Paciente é inserido na fila de triagem para ser atendido
-                char priori[14];
-                bool flag = 0;
-                int prioridade;
+                char priori[15];
+
+                bool flag = false;
+                int prioridade = -1; //começa invalido
                 while(!flag){
-                    printf("Digite a prioridade do paciente: ");
-                    scanf("%s", priori);
-                    if(!strcmp(priori, "Emergência") || !strcmp(priori, "emergência")){
-                        prioridade = 4;
+                    printf("->Digite a prioridade do paciente, \n");
+                    printf("-->Emergencia, Muito urgente, Urgente, Pouco urgente, Nao urgencia: ");
+
+                    //fgets(priori, 14, stdin);
+                    //priori[strcspn(priori, "\n")] = '\0';
+                    
+                    if (fgets(priori,15, stdin) != NULL) {
+                        priori[strcspn(priori, "\n")] = '\0'; // Remove o \n
+                    }
+
+                    if(!strcmp(priori, "Emergencia") || !strcmp(priori, "emergencia")){
+                        prioridade = 0;
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Muito urgente") || !strcmp(priori, "muito urgente")){
-                        prioridade = 3;
+                        prioridade = 1;
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Urgente") || !strcmp(priori, "urgente")){
@@ -86,11 +102,11 @@ int main(void) {
                         flag = 1;
                     }
                     else if(!strcmp(priori, "Pouco urgente") || !strcmp(priori, "pouco urgente")){
-                        prioridade = 1;
+                        prioridade = 3;
                         flag = 1;
                     }
-                    else if(!strcmp(priori, "Não urgência") || !strcmp(priori, "não urgência")){
-                        prioridade = 0;
+                    else if(!strcmp(priori, "Nao urgencia") || !strcmp(priori, "nao urgencia")){
+                        prioridade = 4;
                         flag = 1;
                     }else{
                         printf("Erro ao interpretar a situação do paciente!\n");
@@ -104,14 +120,14 @@ int main(void) {
                     break;
                 }
 
-                printf("Paciente de ID %d registrado e inserido na fila de espera com sucesso!\n", id);
+                printf("\n->Paciente de ID %d registrado e inserido na fila de espera com sucesso!\n", id);
                 printf("------------REGISTRO DE PACIENTE------------\n\n");
                 break;
             case 2:
             //Remover paciente
-                printf("------------SISTEMA DE MORTE------------\n");
+                printf("\n------------SISTEMA DE MORTE------------\n");
                 
-                printf("Id do paciente: ");
+                printf("->Id do paciente: ");
                 scanf("%d",&id);
                 //Busca do paciente na lista para sua remoção
                 paciente = avl_buscar_paciente(lista_pacientes, id);
@@ -134,11 +150,14 @@ int main(void) {
                 break;
             case 3:
                 //Listar pacientes
+                printf("\n----------USUARIOS CADASTRADOS----------\n");
                 avl_listar(lista_pacientes);
+                printf("----------USUARIOS CADASTRADOS----------\n");
                 break;
             case 4:
                 //Buscar por ID
-                printf("Id do paciente: ");
+                printf("\n------------BUSCA DE PACIENTE------------\n");
+                printf("->ID do paciente: ");
                 scanf("%d",&id);
                 paciente = avl_buscar_paciente(lista_pacientes, id);
                 if(paciente == NULL){
@@ -147,6 +166,7 @@ int main(void) {
                 else{
                     paciente_imprimir(paciente);
                 }
+                printf("\n------------BUSCA DE PACIENTE------------\n");
                 break;
             case 5:
                 //Mostra a triagem e os pacientes nela
