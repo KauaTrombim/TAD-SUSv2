@@ -36,7 +36,7 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
 bool paciente_apagar(Paciente **p){
     if(p != NULL && *p != NULL){
         free((*p)->nome);
-        historico_apagar(&(*paciente)->historico);
+        historico_apagar(&(*p)->historico);
         free(*p);
         return true;
     }
@@ -85,7 +85,7 @@ void paciente_listar(Paciente *p){
     }
 }
 
-HISTORICO *paciente_gethistorico(PACIENTE *paciente) {
+HISTORICO *paciente_gethistorico(Paciente *paciente) {
     if (paciente == NULL) {
         return NULL;
     }
