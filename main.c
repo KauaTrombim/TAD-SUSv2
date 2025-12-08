@@ -115,6 +115,7 @@ int main(void) {
                 }
                 id = paciente_getID(paciente);
                 ok = heap_inserir(triagem, paciente, prioridade);
+                printf("\nentrei\ndeu ok? %d\nprioridade: %d", ok, prioridade);
                 if(!ok) {
                     printf("ERRO ao inserir paciente na triagem!\n");
                     printf("------------REGISTRO DE PACIENTE------------\n\n");

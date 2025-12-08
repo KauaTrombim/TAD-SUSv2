@@ -27,7 +27,6 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
         p->id = id;
     }
     strncpy(p->nome, nome, 100);
-    p->historico = historico_criar(); //Temos que incluir essa função
     p->naFila = true; //Marca o paciente como na fila já na inserção
     p->historico = historico_criar();
     return p;
@@ -72,7 +71,7 @@ bool paciente_naFila(Paciente *p){
     if(p != NULL){
         return p->naFila;
     }
-    return true; //evita que possa ser removido
+    return false;
 }
 
 void paciente_imprimir(Paciente *p){
