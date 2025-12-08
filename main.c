@@ -161,6 +161,8 @@ int main(void) {
                     break;
                 }
                 printf("Paciente: %s recebeu alta\n", paciente_getNome(no_getPac(removido)));
+                free(removido);
+                removido = NULL;
                 break;
             case 7:
             // Sair do loop e salvamento dos dados
