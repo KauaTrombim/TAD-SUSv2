@@ -1,4 +1,4 @@
-#include "historico.h"
+#include "../headers/historico.h"
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
