@@ -1,15 +1,19 @@
 //Arthur de Castro Dias - 16855302
 //Gabriel Carraro Salzedas - 16827905
 //Kaua Benjamin Trombim Silva - 16830893
-#include "TADs/headers/setup.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "TADs/headers/paciente.h"
+#include "TADs/headers/avl.h" 
 #include "TADs/headers/heap.h"
 #include <string.h>
+
 
 int main(void) {
     bool ok;
     //A lista é inicializada e os dados são carregados
-    AvL *lista_pacientes;
+    AVL *lista_pacientes;
     //lista_pacientes = avl_carregar_dados();
     lista_pacientes = avl_criar();
     //carregar_lista(lista_pacientes);
@@ -32,13 +36,7 @@ int main(void) {
     int op = 0;
     do {
         // Escolhemos adicionar mais uma opção, "3-Inserir paciente na fila", para o caso de querermos inserir um paciente já cadastrado na lista, sem ter que mudar o funcionamento do TAD lista_paciente.
-        printf("\nMenu:\n1-Registrar paciente\n
-            2-Remover paciente\n
-            3-Lista de pacientes\n
-            4-Buscar paciente\n
-            5-Mistrar fila de espera\n
-            6-Dar alta ao paciente\n
-            7-Sair\n");
+        printf("\nMenu:\n1-Registrar paciente\n2-Remover paciente\n3-Lista de pacientes\n4-Buscar paciente\n5-Mostrar fila de espera\n6-Dar alta ao paciente\n7-Sair\n");
         printf("Digite a opção desejada: ");
         scanf("%d",&op);
         Paciente *paciente;
@@ -123,7 +121,7 @@ int main(void) {
                     break;
                 }
                 //Remoção do paciente da lista
-                ok = lista_paciente_remover(lista_pacientes, paciente);
+                ok = avl_remover_paciente(lista_pacientes, id);
                 if(!ok) {
                     printf("ERRO ao remover paciente da lista de pacientes!\n");
                     printf("------------SISTEMA DE MORTE------------\n\n");
@@ -147,7 +145,7 @@ int main(void) {
                     printf("Paciente nao encontrado\n");
                 }
                 else{
-                    paciente_listar(paciente);
+                    paciente_imprimir(paciente);
                 }
                 break;
             case 5:
@@ -181,4 +179,5 @@ int main(void) {
                 break;
         }
     }while(op != 7);
+    return 0;
 }

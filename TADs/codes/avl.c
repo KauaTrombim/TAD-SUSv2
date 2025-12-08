@@ -1,5 +1,5 @@
 #include "../headers/avl.h"
-
+#include "../headers/paciente.h"
 #define max(a, b) ((a > b) ? a : b)
 
 typedef struct no_ NO;
@@ -33,7 +33,7 @@ void apagar_nos(NO *raiz){
     if(raiz != NULL){
         apagar_nos(raiz->esq);
         apagar_nos(raiz->dir);
-        paciente_apagar(raiz->paciente);
+        paciente_apagar(&raiz->paciente);
         free(raiz);
     }
 }
@@ -105,7 +105,7 @@ NO *inserir_no(NO *raiz, Paciente *p){
         raiz->dir = inserir_no(raiz->dir, p);
     }
 
-    raiz->altura = max(avl_altura_no(raiz->esq, raiz->dir)) + 1;
+    raiz->altura = max(avl_altura_no(raiz->esq), avl_altura_no(raiz->dir)) + 1;
     int FB = avl_altura_no(raiz->esq) - avl_altura_no(raiz->dir);
 
     if(FB == -2){
@@ -131,6 +131,7 @@ bool avl_inserir_paciente(AVL *avl, Paciente *p){
         avl->ultimoID++;
         return avl->raiz != NULL;
     }
+    return false;
 }
 
 //poderia ser o min da direita
@@ -218,6 +219,15 @@ bool avl_remover_paciente(AVL *avl, int id){
         avl->raiz = remover_no(avl->raiz, id);
         return avl != NULL;
     }
+    return false;
+}
+
+void listar(NO *raiz){
+    if(raiz != NULL){
+        listar(raiz->esq);
+        paciente_imprimir(raiz->paciente);
+        listar(raiz->dir);
+    }
 }
 
 //Lista os pacientes em ordem
@@ -227,26 +237,11 @@ void avl_listar(AVL *avl){
     }
 }
 
-void listar(NO *raiz){
-    if(raiz != NULL){
-        avl_listar(raiz->esq);
-        paciente_imprimir(raiz->paciente);
-        avl_listar(raiz->dir);
-    }
-}
-
 int avl_gerar_id(AVL *avl) {
     if(avl != NULL){
         return avl->ultimoID + 1; 
     }
-}
-
-Paciente *avl_buscar_paciente(AVL *avl, int id){
-    if(avl != NULL && id > -1){
-        return busca(avl->raiz, id);
-    }
-    printf("AVL_buscar_paciente: erro ao acessar ponteiro ou ID invalido");
-    return NULL;
+    return -1;
 }
 
 Paciente *busca(NO *raiz, int id){
@@ -256,11 +251,21 @@ Paciente *busca(NO *raiz, int id){
         }
         else{
             if(paciente_getID(raiz->paciente) > id){
-                busca(raiz->dir);
+                busca(raiz->dir, id);
             }
             else{
-                busca(raiz->esq);
+                busca(raiz->esq, id);
             }
         }
     }
+    return NULL;
 }   
+
+Paciente *avl_buscar_paciente(AVL *avl, int id){
+    if(avl != NULL && id > -1){
+        return busca(avl->raiz, id);
+    }
+    printf("AVL_buscar_paciente: erro ao acessar ponteiro ou ID invalido");
+    return NULL;
+}
+

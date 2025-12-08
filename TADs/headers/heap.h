@@ -2,7 +2,9 @@
     #define TAD_HEAP
 
     #include "paciente.h"
-    #include "setup.h"
+    #include <stdbool.h>
+    #include <stdlib.h>
+    #include <stdio.h>
     #include<time.h>
 
     typedef struct HEAP Heap;

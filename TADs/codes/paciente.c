@@ -1,5 +1,5 @@
-#include "../headers/setup.h"
 #include "../headers/avl.h"
+#include "../headers/historico.h"
 #include "../headers/paciente.h"
 
 struct pac{
@@ -36,7 +36,7 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
 bool paciente_apagar(Paciente **p){
     if(p != NULL && *p != NULL){
         free((*p)->nome);
-        historico_apagar(&(*paciente)->historico);
+        historico_apagar(&(*p)->historico);
         free(*p);
         return true;
     }
@@ -73,9 +73,10 @@ bool paciente_naFila(Paciente *p){
     if(p != NULL){
         return p->naFila;
     }
+    return true; //evita que possa ser removido
 }
 
-void paciente_listar(Paciente *p){
+void paciente_imprimir(Paciente *p){
     if(p != NULL){  
         printf("ID: %d\n", p->id);
         printf("Nome: %s\n", p->nome);
@@ -85,7 +86,7 @@ void paciente_listar(Paciente *p){
     }
 }
 
-HISTORICO *paciente_gethistorico(PACIENTE *paciente) {
+HISTORICO *paciente_gethistorico(Paciente *paciente) {
     if (paciente == NULL) {
         return NULL;
     }
