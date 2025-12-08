@@ -7,6 +7,7 @@
 #include "TADs/headers/paciente.h"
 #include "TADs/headers/avl.h" 
 #include "TADs/headers/heap.h"
+#include "TADs/headers/historico.h"
 #include <string.h>
 
 
@@ -36,7 +37,7 @@ int main(void) {
     int op = 0;
     do {
         // Escolhemos adicionar mais uma opção, "3-Inserir paciente na fila", para o caso de querermos inserir um paciente já cadastrado na lista, sem ter que mudar o funcionamento do TAD lista_paciente.
-        printf("\nMenu:\n1-Registrar paciente\n2-Remover paciente\n3-Lista de pacientes\n4-Buscar paciente\n5-Mostrar fila de espera\n6-Dar alta ao paciente\n7-Sair\n");
+        printf("\nMenu:\n1-Registrar paciente\n2-Remover paciente\n3-Lista de pacientes\n4-Buscar paciente\n5-Mostrar fila de espera\n6-Dar alta ao paciente\n7-Adiconar procedimento ao histórico\n8-Remover procedimento do histórico\n9-Sair\n");
         printf("Digite a opção desejada: ");
         scanf("%d",&op);
         Paciente *paciente;
@@ -186,6 +187,71 @@ int main(void) {
                 removido = NULL;
                 break;
             case 7:
+                //Registro de procedimento ao histórico
+                printf("------------ADIÇÃO DE PROCEDIMENTO AO HISTÓRICO------------\n");
+                printf("Insira o id do paciente: ");
+                scanf("%d",&id);
+                //Busca pelo paciente
+                paciente = avl_buscar_paciente(lista_pacientes, id);
+                if(paciente == NULL) {
+                    printf("ERRO ao procurar paciente!\n");
+                    printf("------------ADIÇÃO DE PROCEDIMENTO AO HISTÓRICO------------\n\n");
+                    break;
+                }
+                //Se o histórico do paciente estiver cheio o usuário recebe um aviso
+                if(historico_cheio(paciente_gethistorico(paciente))) {
+                    printf("ERRO ao inserir procedimento: histórico cheio!\n");
+                    printf("------------ADIÇÃO DE PROCEDIMENTO AO HISTÓRICO------------\n\n");
+                    break;
+                }
+
+                printf("Procedimento: ");
+                char procedimento[100];
+                //Lê o procedimento do usuário
+                if(fscanf(stdin, " %99[^\n]", procedimento) != 1) {
+                    printf("ERRO ao ler procedimento!\n");
+                    printf("------------ADIÇÃO DE PROCEDIMENTO AO HISTÓRICO------------\n\n");
+                    break;
+                }
+                //Avisa se houver erro na inserção
+                if(!historico_inserir(paciente_gethistorico(paciente), procedimento)) {
+                    printf("ERRO ao inserir histórico do paciente!\n");
+                    printf("------------ADIÇÃO DE PROCEDIMENTO AO HISTÓRICO------------\n\n");
+                    break;
+                }
+
+                printf("Procedimento adicionado ao histórico do paciente!\n");
+                printf("------------ADIÇÃO DE PROCEDIMENTO AO HISTÓRICO------------\n\n");
+                break;
+            case 8:
+                //O último procedimento do histórioc é desfeito
+                printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n");
+                printf("Id do paciente: ");
+                scanf("%d",&id);
+                //Procura o paciente que terá o histórico alterado
+                paciente = avl_buscar_paciente(lista_pacientes, id);
+                if(paciente == NULL) {
+                    printf("ERRO ao procurar paciente!\n");
+                    printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n\n");
+                    break;
+                }
+                //Se o histórico estiver vazio não tem como retirar nada
+                if(historico_vazio(paciente_gethistorico(paciente))) {
+                    printf("ERRO ao retirar procedimento: histórico vazio!\n");
+                    printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n\n");
+                    break;
+                }
+                //Se falhar avisa ao usuário
+                if(!historico_retirar(paciente_gethistorico(paciente))) {
+                    printf("ERRO ao retirar procedimento do histórico do paciente!\n");
+                    printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n\n");
+                    break;
+                }
+                
+                printf("Procedimento desfeito do histórico do paciente!\n");
+                printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n\n");
+                break;
+            case 9:
             // Sair do loop e salvamento dos dados
                 //A fila e a lista são salvas
                 //salvar_fila(triagem);
