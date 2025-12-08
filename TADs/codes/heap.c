@@ -20,7 +20,7 @@ Heap *heap_criar(){
 }
 
 void heap_apagar(Heap **heap){
-    if(heap == NULL){
+    if(*heap == NULL || hepa==NULL){
         return;
     }
     for(int i = 0; i<=(*heap)->ultimo; i++){
