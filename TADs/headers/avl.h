@@ -4,7 +4,8 @@
     #include <stdbool.h>
     #include <stdlib.h>
     #include <stdio.h>
-    typedef struct pac Paciente;// Necessário para evitar erros
+    typedef struct HEAP Heap; 
+    typedef struct pac Paciente;
     typedef struct avl AVL;
 
     AVL *avl_criar();
@@ -14,4 +15,6 @@
     void avl_listar(AVL *avl);
     Paciente *avl_buscar_paciente(AVL *avl, int id);
     int avl_gerar_id(AVL *avl);
+    bool avl_salvar(AVL *avl);
+    void avl_carregar(AVL *avl);
 #endif

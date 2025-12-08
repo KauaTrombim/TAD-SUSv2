@@ -172,3 +172,44 @@ Paciente *no_getPac(NO* item){
     }
     return item->pac;
 }
+
+bool heap_salvar(Heap *heap) {
+    if (heap == NULL) {
+        return false;
+    }
+
+    FILE *arq = fopen("triagem.txt", "w");
+    if (arq == NULL) {
+        return false;
+    }
+
+    for (int i = 0; i <= heap->ultimo; ++i) {
+        if (heap->arvore[i] != NULL && heap->arvore[i]->pac != NULL) {
+            int id = paciente_getID(heap->arvore[i]->pac);
+            int situacao = heap->arvore[i]->situacao;
+            fprintf(arq, "%d %d\n", id, situacao);
+        }
+    }
+
+    fclose(arq);
+    return true;
+}
+
+bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
+    FILE *arq = fopen("triagem.txt", "r");
+    if (arq == NULL) {
+        return false;
+    }
+
+    int id, prioridade;
+    while (fscanf(arq, "%d %d", &id, &prioridade) == 2) {
+        Paciente *p = avl_buscar_paciente(lista_pacientes, id);
+        
+        if (p != NULL) {
+            heap_inserir(heap, p, prioridade);
+        }
+    }
+
+    fclose(arq);
+    return true;
+}

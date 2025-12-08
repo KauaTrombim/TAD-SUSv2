@@ -15,9 +15,8 @@ int main(void) {
     bool ok;
     //A lista é inicializada e os dados são carregados
     AVL *lista_pacientes;
-    //lista_pacientes = avl_carregar_dados();
     lista_pacientes = avl_criar();
-    //carregar_lista(lista_pacientes);
+    avl_carregar(lista_pacientes);
 
     if (lista_pacientes == NULL) {
         printf("ERRO ao criar lista de pacientes!\n");
@@ -28,12 +27,12 @@ int main(void) {
     //Necessário depois da lista pois seu carregamento depende dela
     Heap *triagem;
     triagem = heap_criar();
-    //carregar_fila(triagem, lista_pacientes);
     if(triagem == NULL){
         printf("Erro ao inicializar a triagem!");
         return 1;
     }
-    printf("-------Bem vindo ao TAD SUS V2!-------\n");
+    heap_carregar(triagem, lista_pacientes);
+    printf("-------Bem-vindo ao TAD SUS V2!-------\n");
     int op = 0;
     do {
         // Escolhemos adicionar mais uma opção, "3-Inserir paciente na fila", para o caso de querermos inserir um paciente já cadastrado na lista, sem ter que mudar o funcionamento do TAD lista_paciente.
@@ -252,18 +251,15 @@ int main(void) {
                 printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n\n");
                 break;
             case 9:
-            // Sair do loop e salvamento dos dados
-                //A fila e a lista são salvas
-                //salvar_fila(triagem);
-                //salvar_lista(lista_pacientes);
-                //Após seu salvamento a triagem e a lista de pacientes são apagadas
-                //triagem_apagar(&triagem);
-                //lista_paciente_apagar(&lista_pacientes);
+                avl_salvar(lista_pacientes);
+                heap_salvar(triagem);
+                heap_apagar(&triagem);
+                avl_apagar(&lista_pacientes);
                 break;
             default:
             //Caso a opção digitada seja inválida nada acontece
                 break;
         }
-    }while(op != 7);
+    }while(op != 9);
     return 0;
 }

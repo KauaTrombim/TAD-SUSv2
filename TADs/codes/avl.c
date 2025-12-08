@@ -1,18 +1,19 @@
 #include "../headers/avl.h"
 #include "../headers/paciente.h"
+#include "../headers/avl.h"
 #define max(a, b) ((a > b) ? a : b)
 
-typedef struct no_ NO;
+typedef struct no_ NO_AVL;
 
 struct no_{
-    NO *esq;
-    NO *dir;
+    NO_AVL *esq;
+    NO_AVL *dir;
     int altura;
     Paciente *paciente;
 };
 
 struct avl{
-    NO *raiz;
+    NO_AVL *raiz;
     int profundidade; //Nunca usada
     int ultimoID; //Tornamos a inserção/criação mais fácil
 };
@@ -29,7 +30,7 @@ AVL *avl_criar(){
 }
 
 //Função auxiliar
-void apagar_nos(NO *raiz){
+void apagar_nos(NO_AVL *raiz){
     if(raiz != NULL){
         apagar_nos(raiz->esq);
         apagar_nos(raiz->dir);
@@ -46,15 +47,15 @@ void avl_apagar(AVL **avl){
     }
 }
 
-int avl_altura_no(NO *raiz){
+int avl_altura_no(NO_AVL *raiz){
     if(raiz != NULL)
         return raiz->altura;
     else
         return -1;
 }
 
-NO *avl_criar_no(Paciente *p){
-    NO *n = (NO *) malloc(sizeof(NO));
+NO_AVL *avl_criar_no(Paciente *p){
+    NO_AVL *n = (NO_AVL *) malloc(sizeof(NO_AVL));
     if(n != NULL){ 
         n->esq = NULL;
         n->dir = NULL;
@@ -64,8 +65,8 @@ NO *avl_criar_no(Paciente *p){
     return n;
 }
 
-NO *rot_Direita(NO *a){
-    NO *b = a->esq;
+NO_AVL *rot_Direita(NO_AVL *a){
+    NO_AVL *b = a->esq;
     a->esq = b->dir;
     b->dir = a;
 
@@ -74,8 +75,8 @@ NO *rot_Direita(NO *a){
     return b;
 }
 
-NO *rot_Esquerda(NO *a){
-    NO *b = a->dir;
+NO_AVL *rot_Esquerda(NO_AVL *a){
+    NO_AVL *b = a->dir;
     a->dir = b->esq;
     b->esq = a;
 
@@ -84,17 +85,17 @@ NO *rot_Esquerda(NO *a){
     return b;
 }
 
-NO *rot_EsqDireita(NO *a){
+NO_AVL *rot_EsqDireita(NO_AVL *a){
     a->esq = rot_Esquerda(a->esq);
     return rot_Direita(a);
 }
 
-NO *rot_DirEsquerda(NO *a){
+NO_AVL *rot_DirEsquerda(NO_AVL *a){
     a->dir = rot_Direita(a->dir);
     return rot_Esquerda(a);
 }
 
-NO *inserir_no(NO *raiz, Paciente *p){
+NO_AVL *inserir_no(NO_AVL *raiz, Paciente *p){
     if(raiz == NULL){
         raiz = avl_criar_no(p);
     }
@@ -135,7 +136,7 @@ bool avl_inserir_paciente(AVL *avl, Paciente *p){
 }
 
 //poderia ser o min da direita
-void troca_max_esq(NO *troca, NO *raiz, NO *ant){
+void troca_max_esq(NO_AVL *troca, NO_AVL *raiz, NO_AVL *ant){
     if(troca->dir != NULL){
         troca_max_esq(troca->dir, raiz, troca);
         return;
@@ -154,8 +155,8 @@ void troca_max_esq(NO *troca, NO *raiz, NO *ant){
     troca = NULL;
 }
 
-NO *remover_no(NO *raiz, int id){
-    NO *p;
+NO_AVL *remover_no(NO_AVL *raiz, int id){
+    NO_AVL *p;
     if(raiz == NULL){
         return NULL;
     }
@@ -222,7 +223,7 @@ bool avl_remover_paciente(AVL *avl, int id){
     return false;
 }
 
-void listar(NO *raiz){
+void listar(NO_AVL *raiz){
     if(raiz != NULL){
         listar(raiz->esq);
         paciente_imprimir(raiz->paciente);
@@ -245,7 +246,7 @@ int avl_gerar_id(AVL *avl) {
     return -1;
 }
 
-Paciente *busca(NO *raiz, int id){
+Paciente *busca(NO_AVL *raiz, int id){
     if(raiz != NULL){
         if(paciente_getID(raiz->paciente) == id){
             return raiz->paciente;
@@ -270,3 +271,113 @@ Paciente *avl_buscar_paciente(AVL *avl, int id){
     return NULL;
 }
 
+
+void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
+    if (raiz != NULL) {
+        salvar_nos_recursivo(raiz->esq, f, primeiro);
+
+        Paciente *p = raiz->paciente;
+        
+        if (!(*primeiro)) {
+            fprintf(f, ",");
+        }
+        *primeiro = false;
+
+        fprintf(f, "\n\t{");
+        fprintf(f, "\n\t\t\"id\": %d,\n", paciente_getID(p));
+        fprintf(f, "\t\t\"nome\": \"%s\",\n", paciente_getNome(p));
+        fprintf(f, "\t\t\"naFila\": %d,\n", paciente_naFila(p) ? 1 : 0);
+
+        fprintf(f, "\t\t\"histórico\": {");
+        HISTORICO *h = paciente_gethistorico(p);
+        PROCEDIMENTO *proc = historico_getultimo(h);
+        int qtd = historico_getquantidade(h);
+
+        for(int j = 0; j < qtd; ++j){
+            if(j == 0){
+                fprintf(f, "\n");
+            }
+            fprintf(f, "\t\t\t\"procedimento\": \"%s\"", procedimento_gettexto(proc));
+            
+            if(j < qtd - 1){
+                fprintf(f, ",");
+            }
+            fprintf(f, "\n");
+            
+            proc = procedimento_getanterior(proc); 
+            
+            if(j == qtd - 1){
+                fprintf(f, "\t\t");
+            }
+        }
+        fprintf(f, "}\n");
+        fprintf(f, "\t}");
+
+        salvar_nos_recursivo(raiz->dir, f, primeiro);
+    }
+}
+
+bool avl_salvar(AVL *avl) {
+    if (avl == NULL) return false;
+
+    FILE *f = fopen("lista.json", "w");
+    if (f == NULL) {
+        return false;
+    }
+
+    fprintf(f, "[");
+    
+    bool primeiro = true;
+    salvar_nos_recursivo(avl->raiz, f, &primeiro);
+
+    fprintf(f, "\n]");
+    fclose(f);
+    return true;
+}
+
+void avl_carregar(AVL *avl) {
+    if (avl != NULL) {
+        FILE *f = fopen("lista.json", "r");
+        if (f == NULL) {
+            return;
+        }
+
+        char buffer[256], nome[101], procedimentoTexto[101];
+        int id;
+        int naFilaInt;
+        Paciente *paciente = NULL;
+
+        while (fgets(buffer, 255, f) != NULL) {
+            if (strstr(buffer, "\"id\":")) {
+                sscanf(buffer, "%*[^:]: %d", &id);
+            } 
+            else if (strstr(buffer, "\"nome\":")) {
+                sscanf(buffer, "%*[^:]: \"%[^\"]", nome);
+                paciente = paciente_criar(avl, nome, id); 
+                if(id > avl->ultimoID) {
+                    avl->ultimoID = id;
+                }
+            }
+            else if (strstr(buffer, "\"naFila\":")) {
+                sscanf(buffer, "%*[^:]: %d", &naFilaInt);
+                if (paciente != NULL) {
+                    paciente_mudar_situacao_fila(paciente, (naFilaInt == 1));
+                }
+            }
+            else if (strstr(buffer, "\"histórico\":")) {
+                if(paciente != NULL){
+                    while (fgets(buffer, 255, f) != NULL && !strstr(buffer, "}")) {
+                        if (strstr(buffer, "\"procedimento\":")) {
+                            sscanf(buffer, "%*[^:]: \"%[^\"]", procedimentoTexto);
+                            historico_inserir(paciente_gethistorico(paciente), procedimentoTexto);
+                        }
+                    }
+                    historico_inverter(paciente_gethistorico(paciente));
+                    avl_inserir_paciente(avl, paciente);
+                    paciente = NULL;
+                }
+            }
+        }
+        fclose(f);
+    }
+}
