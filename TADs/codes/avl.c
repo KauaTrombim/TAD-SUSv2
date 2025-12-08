@@ -159,7 +159,11 @@ NO *remover_no(NO *raiz, int id){
         return NULL;
     }
     else if(id == paciente_getID(raiz->paciente)){
-        if(paciente_naFila(raiz->paciente))
+        //Não podemos remover o paciente ainda esperando
+        if(paciente_naFila(raiz->paciente)){
+            printf("AVL_remover_paciente: Nao e possivel remover um paciente em espera\n");
+            return NULL;
+        }
         p = raiz;
         //Caso tenha 1 ou nenhum filho
         if(raiz->esq == NULL || raiz->dir == NULL){
