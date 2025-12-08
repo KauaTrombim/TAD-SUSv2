@@ -80,6 +80,13 @@ void paciente_imprimir(Paciente *p){
     if(p != NULL){  
         printf("ID: %d\n", p->id);
         printf("Nome: %s\n", p->nome);
+        printf("------Histórico------\n");
+        PROCEDIMENTO *procedimento = historico_getultimo(p->historico);
+        for(int i = historico_getquantidade(p->historico); i>0; i--){
+            printf("Procediemnto %d: %s\n", i, procedimento_gettexto(procedimento));
+            procedimento = procedimento_getanterior(procedimento);
+        }
+        printf("------Histórico------\n");
         char *state = (p->naFila) ? "Sim" : "Nao";
         printf("Esta na fila: %s\n", state);
         printf("------------------------------------------");
