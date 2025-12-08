@@ -1,5 +1,6 @@
 #ifndef TAD_PACIENTE
     #define TAD_PACIENTE
+    #include "historico.h"
     
     #include <stdbool.h>
     #include <stdlib.h>
