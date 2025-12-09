@@ -253,7 +253,7 @@ Paciente *busca(NO_AVL *raiz, int id){
 }   
 
 Paciente *avl_buscar_paciente(AVL *avl, int id){
-    if(avl != NULL && id > -1){
+    if(avl != NULL){
         return busca(avl->raiz, id);
     }
     printf("AVL_buscar_paciente: erro ao acessar ponteiro ou ID invalido");
