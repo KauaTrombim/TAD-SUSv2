@@ -45,7 +45,7 @@ int main(void) {
         printf("4-Buscar paciente\n");
         printf("5-Mostrar fila de espera\n");
         printf("6-Dar alta ao paciente\n");
-        printf("7-Adiconar procedimento ao histórico\n");
+        printf("7-Adicionar procedimento ao histórico\n");
         printf("8-Remover procedimento do histórico\n");
         printf("9-Sair\n");
 
@@ -183,15 +183,18 @@ int main(void) {
                 break;
             case 6:
                 //Dar alta, remove o paciente mais prioritário da heap
+                printf("------------ALTA DO PACIENTE------------\n");
                 NO* removido = heap_remover(triagem);
                 if(removido == NULL){
                     printf("Erro ao dar alta ao paciente!\n");
+                    printf("------------ALTA DO PACIENTE------------\n");
                     break;
                 }
                 printf("Paciente: %s de ID: %d recebeu alta\n", paciente_getNome(no_getPac(removido)), paciente_getID(no_getPac(removido)));
                 //Liberação do nó
                 free(removido);
                 removido = NULL;
+                printf("------------ALTA DO PACIENTE------------\n");
                 break;
             case 7:
                 //Registro de procedimento ao histórico
