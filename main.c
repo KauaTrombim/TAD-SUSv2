@@ -55,10 +55,16 @@ int main(void) {
                 char nome[100];
                 printf("->Insira o nome do paciente (max: 99 caracteres): ");
                 
-                
-                fgets(nome, 100, stdin);
-                nome[strcspn(nome, "\n")] = '\0';
-                fflush(stdin);
+                if (fgets(nome, sizeof(nome), stdin) != NULL) {
+                    char *p = strchr(nome, '\n');
+                    if (p) {
+                        *p = '\0';//Verificando se o texto coube inteiro
+                    } else {
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF); //limpando o resto da string se não couber
+                    }
+                }
+
                 //Cria paciente com o nome dado, id -1 para identificação de que
                 //ele é um novo paciente
                 paciente = paciente_criar(lista_pacientes, nome, -1);
