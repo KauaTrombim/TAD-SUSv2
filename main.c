@@ -1,7 +1,7 @@
 //Arthur de Castro Dias - 16855302
 //Gabriel Carraro Salzedas - 16827905
 //Kaua Benjamin Trombim Silva - 16830893
-//==== made in ICMC-USP====\\
+//==== made in ICMC-USP====
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -42,27 +42,46 @@ do {
     Paciente *paciente;
 
     char a;
+    while ((a = getchar()) != '\n' && a != EOF); //consome lixo
+
     int id;
     //Executa alguma das ações de acordo com a entrada do usuário
     switch (op) {
         case 1:
-            //Registrar paciente
-            //Agora precisamos verificar se o paciente já existe ou não
-            //Entra na triagem de qualquer forma.
-            printf("\n------------REGISTRO DE PACIENTE------------\n");
-            char nome[100];
-            id = -2;
-            int priori = 0;
-            while(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
-                printf("->Insira o ID do paciente(-1 se for novo paciente): ");
-                scanf("%d", &id);
-                if(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
-                    printf("ID digitado inválido!\n");
+                //Registrar paciente
+                //Agora precisamos verificar se o paciente já existe ou não
+                //Entra na triagem de qualquer forma.
+                printf("\n------------REGISTRO DE PACIENTE------------\n");
+                char nome[100];
+                printf("->Insira o nome do paciente (max: 99 caracteres): ");
+                
+                if (fgets(nome, sizeof(nome), stdin) != NULL) {
+                    char *p = strchr(nome, '\n');
+                    if (p) {
+                        *p = '\0';//Verificando se o texto coube inteiro
+                    } else {
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF); //limpando o resto da string se não couber
+                    }
                 }
-            }
-            paciente = avl_buscar_paciente(lista_pacientes, id);
-            if(paciente != NULL){
-                priori = 0; //começa invalido
+
+                //Cria paciente com o nome dado, id -1 para identificação de que
+                //ele é um novo paciente
+                paciente = paciente_criar(lista_pacientes, nome, -1);
+                if(paciente == NULL) {
+                    printf("ERRO ao criar paciente!\n");
+                    printf("------------REGISTRO DE PACIENTE------------\n\n");
+                    break;
+                }
+                //Paciente é guardado na lista geral
+                ok = avl_inserir_paciente(lista_pacientes, paciente);
+                if(!ok) {
+                    printf("ERRO ao inserir paciente na lista de pacientes!\n");
+                    printf("------------REGISTRO DE PACIENTE------------\n\n");
+                    break;
+                }
+                //Paciente é inserido na fila de triagem para ser atendido
+                int priori = 0; //começa invalido
                 while(priori < 1 || priori > 5){
                     printf("->Digite a prioridade do paciente, \n");
                     printf("-->1-Nao urgencia, 2-Pouco urgente, 3-Urgente, 4-Muito urgente, 5-Emergencia: ");
@@ -73,70 +92,16 @@ do {
                     }
                 }
                 id = paciente_getID(paciente);
-                if(paciente_naFila(paciente)){
-                    printf("Paciente ja esta registrado na fila!\n");
-                    break;
-                }
                 ok = heap_inserir(triagem, paciente, priori);
                 if(!ok) {
                     printf("ERRO ao inserir paciente na triagem!\n");
                     printf("------------REGISTRO DE PACIENTE------------\n\n");
                     break;
                 }
+
                 printf("\n->Paciente de ID %d registrado e inserido na fila de espera com sucesso!\n", id);
                 printf("------------REGISTRO DE PACIENTE------------\n\n");
                 break;
-            }
-            while ((a = getchar()) != '\n' && a != EOF); //consome lixo
-            printf("->Insira o nome do paciente (max: 99 caracteres): ");
-            
-            if (fgets(nome, sizeof(nome), stdin) != NULL) {
-                char *p = strchr(nome, '\n');
-                if (p) {
-                    *p = '\0';//Verificando se o texto coube inteiro
-                } else {
-                    int c;
-                    while ((c = getchar()) != '\n' && c != EOF); //limpando o resto da string se não couber
-                }
-            }
-
-            //Cria paciente com o nome dado, id -1 para identificação de que
-            //ele é um novo paciente
-            paciente = paciente_criar(lista_pacientes, nome, id);
-            if(paciente == NULL) {
-                printf("ERRO ao criar paciente!\n");
-                printf("------------REGISTRO DE PACIENTE------------\n\n");
-                break;
-            }
-            //Paciente é guardado na lista geral
-            ok = avl_inserir_paciente(lista_pacientes, paciente);
-            if(!ok) {
-                printf("ERRO ao inserir paciente na lista de pacientes!\n");
-                printf("------------REGISTRO DE PACIENTE------------\n\n");
-                break;
-            }
-            //Paciente é inserido na fila de triagem para ser atendido
-            priori = 0; //começa invalido
-            while(priori < 1 || priori > 5){
-                printf("->Digite a prioridade do paciente, \n");
-                printf("-->1-Nao urgencia, 2-Pouco urgente, 3-Urgente, 4-Muito urgente, 5-Emergencia: ");
-
-                scanf("%d",&priori);
-                if(priori < 1 || priori > 5){
-                    printf("Prioridade inválida.\n");
-                }
-            }
-            id = paciente_getID(paciente);
-            ok = heap_inserir(triagem, paciente, priori);
-            if(!ok) {
-                printf("ERRO ao inserir paciente na triagem!\n");
-                printf("------------REGISTRO DE PACIENTE------------\n\n");
-                break;
-            }
-
-            printf("\n->Paciente de ID %d registrado e inserido na fila de espera com sucesso!\n", id);
-            printf("------------REGISTRO DE PACIENTE------------\n\n");
-            break;
         case 2:
         //Remover paciente
             printf("\n------------SISTEMA DE MORTE------------\n");
