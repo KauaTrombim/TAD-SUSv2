@@ -64,11 +64,11 @@ void heap_fixdown(Heap *heap, int indice){
     //Comparação de acordo com a prioridade
     if(2*indice+1 <= heap->ultimo){
         //Se for a mesma prioridade quem entrou primeiro tem preferência
-        if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
+        if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+1;
     }
     if(2*indice+2 <= heap->ultimo){
-        if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
+        if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+2;
     }
     //Se o maior foi trocado ele passa para o próximo até que o nó encontre sua posição correta
@@ -90,8 +90,8 @@ void heap_fixup(Heap *heap){
     int maior = (w - 1)/2;
     //Percorre a árvore subindo até encontrar a parte superior.
     while(w > 0 && (heap->arvore[w]->situacao >= heap->arvore[maior]->situacao)){
-        if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0){
-            continue;
+        if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0){
+            break;
         }
         NO* aux = heap->arvore[maior];
         heap->arvore[maior] = heap->arvore[w];
