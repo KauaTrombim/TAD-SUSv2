@@ -166,9 +166,12 @@ void historico_inverter(HISTORICO *historico){
         return;
     }
     //Uso de dois ponteiros auxiliares para
-    HISTORICO *aux = (HISTORICO *)malloc(sizeof(HISTORICO));
-    HISTORICO *aux2 = (HISTORICO*)malloc(sizeof(HISTORICO));
-    if(aux == NULL || aux2==NULL){
+    HISTORICO *aux = historico_criar();
+    if(aux == NULL){
+        return;
+    }
+    HISTORICO *aux2 = historico_criar();
+    if(aux2 == NULL){
         return;
     }
     //Como a cada retirada a quantidade de procedimen tos diminui

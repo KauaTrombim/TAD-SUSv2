@@ -3,12 +3,9 @@
 		"id": 0,
 		"nome": "jao",
 		"naFila": 1,
-		"histórico": {}
-	},
-	{
-		"id": 1,
-		"nome": "amanda",
-		"naFila": 0,
-		"histórico": {}
+		"histórico": {
+			"procedimento": "c",
+			"procedimento": "c"
+		}
 	}
 ]
