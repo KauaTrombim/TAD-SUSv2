@@ -58,6 +58,7 @@ int main(void) {
                 
                 fgets(nome, 100, stdin);
                 nome[strcspn(nome, "\n")] = '\0';
+                fflush(stdin);
                 //Cria paciente com o nome dado, id -1 para identificação de que
                 //ele é um novo paciente
                 paciente = paciente_criar(lista_pacientes, nome, -1);
@@ -74,7 +75,7 @@ int main(void) {
                     break;
                 }
                 //Paciente é inserido na fila de triagem para ser atendido
-                int priori;
+                int priori = 0; //começa invalido
                 while(priori < 1 || priori > 5){
                     printf("->Digite a prioridade do paciente, \n");
                     printf("-->1-Nao urgencia, 2-Pouco urgente, 3-Urgente, 4-Muito urgente, 5-Emergencia: ");
