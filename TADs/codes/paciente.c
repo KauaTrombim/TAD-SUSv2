@@ -80,6 +80,7 @@ void paciente_imprimir(Paciente *p){
         printf("Nome: %s\n", p->nome);
         printf("------Histórico------\n");
         PROCEDIMENTO *procedimento = historico_getultimo(p->historico);
+        //Percorre toda a pilha do histórico e mostra um por um.
         for(int i = historico_getquantidade(p->historico); i>0; i--){
             printf("Procedimento %d: %s\n", i, procedimento_gettexto(procedimento));
             procedimento = procedimento_getanterior(procedimento);

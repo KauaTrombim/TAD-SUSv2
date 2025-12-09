@@ -3,7 +3,7 @@
 struct NO{
     Paciente* pac;
     int situacao;
-    time_t horaInsercao;
+    time_t horaInsercao; //Usado para tornar a heap estável
 };
 
 struct HEAP{
@@ -16,7 +16,7 @@ struct HEAP{
 Heap *heap_criar(){
     Heap *heap = malloc(sizeof(Heap));
     if(heap != NULL){
-        //Caso inicial, sem ultimos fica -1.
+        //Caso inicial o último seria -1.
         heap->ultimo = -1;
     }
     return heap;
@@ -49,6 +49,7 @@ bool heap_vazia(Heap *heap){
 
 //Verificaçaõ se a heap está cheia
 bool heap_cheia(Heap *heap){
+    //Como a heap tem tamanho 100 ele vai de 0 a 99.
     if(heap->ultimo == 99){
         return true;
     }
@@ -56,17 +57,19 @@ bool heap_cheia(Heap *heap){
 }
 
 //Pós remoção correção da heap
+//Vai descendo o primeiro nó até que ele entre na posição correta.
 void heap_fixdown(Heap *heap, int indice){
     if(heap==NULL){
         return;
     }
     int maior = indice;
-    //Comparação de acordo com a prioridade
+    //Comparação de acordo com a prioridade do filho esquerdo
     if(2*indice+1 <= heap->ultimo){
         //Se for a mesma prioridade quem entrou primeiro tem preferência
         if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+1;
     }
+    //Análogo para o filho direito
     if(2*indice+2 <= heap->ultimo){
         if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+2;
@@ -90,6 +93,7 @@ void heap_fixup(Heap *heap){
     int maior = (w - 1)/2;
     //Percorre a árvore subindo até encontrar a parte superior.
     while(w > 0 && (heap->arvore[w]->situacao >= heap->arvore[maior]->situacao)){
+        //Preferência para quem entrou primeiro na fila caso as prioridades sejam iguais
         if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0){
             break;
         }
@@ -107,60 +111,79 @@ NO* heap_remover(Heap *heap){
     if(heap == NULL){
         return NULL;
     }
+    //Verificação se heap não está vazia
     if(heap_vazia(heap)){
         printf("Não há registros na fila de espera.\n");
         return NULL;
     }
+    //Como é uma heap o primeiro será o próximo a ser chamado
     NO* item = heap->arvore[0];
+    //Alteração do paciente como fora da fila de espera
     paciente_mudar_situacao_fila(heap->arvore[0]->pac, false);
-    heap->arvore[0] = heap->arvore[heap->ultimo--];
+    //Troca do primeiro elemento da heap com o último
+    heap->arvore[0] = heap->arvore[heap->ultimo--];//Diminuição do último índice preenchido
+    //Função para correção da heap
     heap_fixdown(heap, 0);
+    //Retorno do item removido
     return item;
 }
 
+//Função para inserção de um item
 bool heap_inserir(Heap *heap, Paciente *pac, int priori){
     if(heap == NULL || pac == NULL){
         return false;
     }
+    //Verificação inicial se eles está cheia
     if(heap_cheia(heap)){
+        //Se estiver cheia ele compara a prioridade do último com o novo
         if(heap->arvore[heap->ultimo]->situacao < priori){
+            //Se o novo tiver maiore prioridade ele troca
             printf("O paciente: %s de ID: %d foi removido da fila de espera devido a lotação da fila e sua prioridade ser menor.\n", paciente_getNome(heap->arvore[heap->ultimo]->pac), paciente_getID(heap->arvore[heap->ultimo]->pac));
             paciente_mudar_situacao_fila(heap->arvore[heap->ultimo]->pac, false);
             free(heap->arvore[heap->ultimo]);
             heap->ultimo--;
         }else{
+            //Caso contrário o usuário é avisado da lotação na fila de espera
             printf("A fila de espera está lotada.\n");
             return false;
         }
     }
+    //Criação do novo nó
     NO* item = malloc(sizeof(NO));
     if(item == NULL){
         return false;
     }
+    //Pega o horário atual da inserção
     time_t t = time(NULL);
     item->horaInsercao = t;
+    //Define a situação na fila para verdadeira
     paciente_mudar_situacao_fila(pac, true);
     item->pac = pac;
     item->situacao = priori;
-    heap->arvore[++heap->ultimo] = item;
+    heap->arvore[++heap->ultimo] = item;//Insere no último nó
+    //Função para correçaõ da heap
     heap_fixup(heap);
     return true;
 }
 
+//Função para listagem dos pacientes na heap
 void heap_listar(Heap *heap){
     if(heap == NULL){
         return;
     }
+    //Cria uma heap auxiliar
     Heap* copia = heap_criar();
     if(copia == NULL){
         printf("Falha na listagem de pacientes.\n");
         return;
     }
+    //Copia todos os nós da heap original para a cópia
     for(int i = 0; i<heap->ultimo+1;i++){
         copia->arvore[i] = heap->arvore[i];
     }
     copia->ultimo = heap->ultimo;
     while(!heap_vazia(copia)){
+        //Imprime sempre o primeiro item da heap
         printf("Id: %d\tPaciente: %s\t", paciente_getID(copia->arvore[0]->pac), paciente_getNome(copia->arvore[0]->pac));
         switch(copia->arvore[0]->situacao){
             case 5:
@@ -179,12 +202,15 @@ void heap_listar(Heap *heap){
                 printf("Prioridade: Não urgente\n");
                 break;
         }
+        //Remove o primeiro item da cópia e a arruma, assim o primeiro sempre será o próximo.
         copia->arvore[0] = copia->arvore[copia->ultimo--];
         heap_fixdown(copia, 0);
     }
+    //Apaga a cópia criada
     heap_apagar(&copia);
 }
 
+//Retorna o paciente salvo em um certo nó
 Paciente *no_getPac(NO* item){
     if(item == NULL){
         return NULL;
