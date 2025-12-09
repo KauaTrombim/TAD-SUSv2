@@ -103,10 +103,10 @@ bool heap_inserir(Heap *heap, Paciente *pac, int priori){
     if(heap == NULL || pac == NULL){
         return false;
     }
-    //if(paciente_naFila(pac)){
-    //    printf("Paciente já inserido na fila.\n");
-    //    return false;
-    //}
+    if(paciente_naFila(pac)){
+        printf("Paciente já inserido na fila.\n");
+        return false;
+    }
     if(heap_cheia(heap)){
         if(heap->arvore[heap->ultimo]->situacao < priori){
             printf("O paciente: %s de ID: %d foi removido da fila de espera devido a lotação da fila e sua prioridade ser menor.\n", paciente_getNome(heap->arvore[heap->ultimo]->pac), paciente_getID(heap->arvore[heap->ultimo]->pac));
@@ -123,6 +123,7 @@ bool heap_inserir(Heap *heap, Paciente *pac, int priori){
     }
     time_t t = time(NULL);
     item->horaInsercao = t;
+    paciente_mudar_situacao_fila(pac, true);
     item->pac = pac;
     item->situacao = priori;
     heap->arvore[++heap->ultimo] = item;
