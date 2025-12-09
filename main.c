@@ -42,7 +42,6 @@ do {
     Paciente *paciente;
 
     char a;
-    while ((a = getchar()) != '\n' && a != EOF); //consome lixo
 
     int id;
     //Executa alguma das ações de acordo com a entrada do usuário
@@ -53,6 +52,35 @@ do {
                 //Entra na triagem de qualquer forma.
                 printf("\n------------REGISTRO DE PACIENTE------------\n");
                 char nome[100];
+                id = -2;
+                int priori = 0;
+                while(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
+                    printf("->Insira o ID do paciente(-1 se for novo paciente): ");
+                    scanf("%d", &id);
+                    if(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
+                        printf("ID digitado inválido!\n");
+                    }
+                }
+                paciente = avl_buscar_paciente(lista_pacientes, id);
+                if(paciente != NULL){
+                    priori = 0; //começa invalido
+                    while(priori < 1 || priori > 5){
+                        printf("->Digite a prioridade do paciente, \n");
+                        printf("-->1-Nao urgencia, 2-Pouco urgente, 3-Urgente, 4-Muito urgente, 5-Emergencia: ");
+
+                        scanf("%d",&priori);
+                        if(priori < 1 || priori > 5){
+                            printf("Prioridade inválida.\n");
+                        }
+                    }
+                    if(paciente_naFila(paciente)){
+                        printf("Paciente ja cadastrado na fila.\n");
+                        break;
+                    }
+                    heap_inserir(triagem, paciente, priori);
+                    break;
+                }
+                while ((a = getchar()) != '\n' && a != EOF); //consome lixo
                 printf("->Insira o nome do paciente (max: 99 caracteres): ");
                 
                 if (fgets(nome, sizeof(nome), stdin) != NULL) {
@@ -81,7 +109,7 @@ do {
                     break;
                 }
                 //Paciente é inserido na fila de triagem para ser atendido
-                int priori = 0; //começa invalido
+                priori = 0; //começa invalido
                 while(priori < 1 || priori > 5){
                     printf("->Digite a prioridade do paciente, \n");
                     printf("-->1-Nao urgencia, 2-Pouco urgente, 3-Urgente, 4-Muito urgente, 5-Emergencia: ");
