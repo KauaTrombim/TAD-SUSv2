@@ -103,10 +103,6 @@ bool heap_inserir(Heap *heap, Paciente *pac, int priori){
     if(heap == NULL || pac == NULL){
         return false;
     }
-    if(paciente_naFila(pac)){
-        printf("Paciente já inserido na fila.\n");
-        return false;
-    }
     if(heap_cheia(heap)){
         if(heap->arvore[heap->ultimo]->situacao < priori){
             printf("O paciente: %s de ID: %d foi removido da fila de espera devido a lotação da fila e sua prioridade ser menor.\n", paciente_getNome(heap->arvore[heap->ultimo]->pac), paciente_getID(heap->arvore[heap->ultimo]->pac));
@@ -207,6 +203,7 @@ bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
 
     int id, prioridade;
     while (fscanf(arq, "%d %d", &id, &prioridade) == 2) {
+        printf("%d %d", id, prioridade);
         Paciente *p = avl_buscar_paciente(lista_pacientes, id);
         
         if (p != NULL) {
