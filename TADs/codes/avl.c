@@ -22,6 +22,7 @@ struct avl{
 };
 
 AVL *avl_criar(){
+    //Aloca a árvore
     AVL *avl = (AVL *) malloc(sizeof(AVL));
     if(avl != NULL){
         avl->raiz = NULL;
@@ -136,7 +137,7 @@ NO_AVL *inserir_no(NO_AVL *raiz, Paciente *p){
 bool avl_inserir_paciente(AVL *avl, Paciente *p){
     if(avl != NULL && p != NULL){
         avl->raiz = inserir_no(avl->raiz, p);
-        avl->ultimoID++;
+        avl->ultimoID++; //Ajuste para a lógica de criação
         return avl->raiz != NULL;
     }
     return false;
@@ -228,6 +229,7 @@ bool avl_remover_paciente(AVL *avl, int id){
             printf("avl_remover_paciente: Paciente nao encontrado.\n");
             return false;
         }
+        //Não podemos remover um paciente na fila
         if(paciente_naFila(p)){
             printf("avl_remover_paciente: Nao e possivel remover um paciente que esta na fila de espera\n");
             return false;
@@ -249,6 +251,7 @@ void listar(NO_AVL *raiz){
 }
 
 Paciente *busca(NO_AVL *raiz, int id){
+    //Busca em ABB
     if(raiz != NULL){
         if(paciente_getID(raiz->paciente) == id){
             return raiz->paciente;
@@ -289,6 +292,7 @@ int avl_gerar_id(AVL *avl) {
 
 void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
     if (raiz != NULL) {
+        //Percorremos em ordem e salvamos
         salvar_nos_recursivo(raiz->esq, f, primeiro);
 
         Paciente *p = raiz->paciente;
@@ -298,6 +302,7 @@ void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
         }
         *primeiro = false;
 
+        //Formatação manual
         fprintf(f, "\n\t{");
         fprintf(f, "\n\t\t\"id\": %d,\n", paciente_getID(p));
         fprintf(f, "\t\t\"nome\": \"%s\",\n", paciente_getNome(p));
@@ -308,6 +313,7 @@ void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
         PROCEDIMENTO *proc = historico_getultimo(h);
         int qtd = historico_getquantidade(h);
 
+        //listando histórico
         for(int j = 0; j < qtd; ++j){
             if(j == 0){
                 fprintf(f, "\n");
@@ -333,8 +339,10 @@ void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
 }
 
 bool avl_salvar(AVL *avl) {
+    //Função para salvar os dado ao fim da execução
     if (avl == NULL) return false;
 
+    //inicia o json
     FILE *f = fopen("lista.json", "w");
     if (f == NULL) {
         return false;
@@ -342,15 +350,18 @@ bool avl_salvar(AVL *avl) {
 
     fprintf(f, "[");
     
+    //fase recursiva
     bool primeiro = true;
     salvar_nos_recursivo(avl->raiz, f, &primeiro);
 
+    //finaliza o json
     fprintf(f, "\n]");
     fclose(f);
     return true;
 }
 
 void avl_carregar(AVL *avl) {
+    //Função para carregar os dados salvos
     if (avl != NULL) {
         FILE *f = fopen("lista.json", "r");
         if (f == NULL) {
@@ -362,6 +373,7 @@ void avl_carregar(AVL *avl) {
         int naFilaInt;
         Paciente *paciente = NULL;
 
+        //Procura pelos dados após as chaves
         while (fgets(buffer, 255, f) != NULL) {
             if (strstr(buffer, "\"id\":")) {
                 sscanf(buffer, "%*[^:]: %d", &id);
