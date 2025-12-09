@@ -51,11 +51,11 @@ void heap_fixdown(Heap *heap, int indice){
     }
     int maior = indice;
     if(2*indice+1 <= heap->ultimo){
-        if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
+        if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+1;
     }
     if(2*indice+2 <= heap->ultimo){
-        if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
+        if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+2;
     }
     if(maior!=indice){
@@ -73,7 +73,7 @@ void heap_fixup(Heap *heap){
     int w = heap->ultimo;
     int maior = (w - 1)/2;
     while(w > 0 && (heap->arvore[w]->situacao >= heap->arvore[maior]->situacao)){
-        if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0){
+        if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0){
             continue;
         }
         NO* aux = heap->arvore[maior];
@@ -203,7 +203,6 @@ bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
 
     int id, prioridade;
     while (fscanf(arq, "%d %d", &id, &prioridade) == 2) {
-        printf("%d %d", id, prioridade);
         Paciente *p = avl_buscar_paciente(lista_pacientes, id);
         
         if (p != NULL) {

@@ -3,6 +3,10 @@
 #include "../headers/avl.h"
 #define max(a, b) ((a > b) ? a : b)
 
+/*Abaixo, as funções iniciadas com avl são públicas - podem ser usadas pelo usuário.
+E as demais são auxiliares - o usuário não deveria saber da existência delas.
+*/
+
 typedef struct no_ NO_AVL;
 
 struct no_{
@@ -38,6 +42,7 @@ void apagar_nos(NO_AVL *raiz){
 }
 
 void avl_apagar(AVL **avl){
+    //Deleta a árvore e todos seus nós
     if(avl != NULL && *avl != NULL){
         apagar_nos((*avl)->raiz);
         free(*avl);
@@ -68,6 +73,7 @@ NO_AVL *rot_Direita(NO_AVL *a){
     a->esq = b->dir;
     b->dir = a;
 
+    //Recalculamos as alturas, vale para todas as rotações
     a->altura = max(avl_altura_no(a->esq), avl_altura_no(a->dir)) + 1;
     b->altura = max(avl_altura_no(b->esq), avl_altura_no(b->dir)) + 1;
     return b;
@@ -97,6 +103,8 @@ NO_AVL *inserir_no(NO_AVL *raiz, Paciente *p){
     if(raiz == NULL){
         raiz = avl_criar_no(p);
     }
+
+    //direciona a recursão
     else if (paciente_getID(p) < paciente_getID(raiz->paciente)){
         raiz->esq = inserir_no(raiz->esq, p);
     }
@@ -104,6 +112,7 @@ NO_AVL *inserir_no(NO_AVL *raiz, Paciente *p){
         raiz->dir = inserir_no(raiz->dir, p);
     }
 
+    //Balanceamento
     raiz->altura = max(avl_altura_no(raiz->esq), avl_altura_no(raiz->dir)) + 1;
     int FB = avl_altura_no(raiz->esq) - avl_altura_no(raiz->dir);
 
@@ -158,6 +167,7 @@ NO_AVL *remover_no(NO_AVL *raiz, int id){
     if(raiz == NULL){
         return NULL;
     }
+    //se achamos o nó
     else if(id == paciente_getID(raiz->paciente)){
         p = raiz;
         //Caso tenha 1 ou nenhum filho
@@ -173,10 +183,12 @@ NO_AVL *remover_no(NO_AVL *raiz, int id){
             free(p);
             p = NULL;
         }
+        //caso tenha 2
         else{
             troca_max_esq(raiz->esq, raiz, (raiz));
         }
     }
+    //direciona a recursão
     else if(id < paciente_getID(raiz->paciente)){
         raiz->esq = remover_no(raiz->esq, id);
     }
@@ -184,6 +196,7 @@ NO_AVL *remover_no(NO_AVL *raiz, int id){
         raiz->dir = remover_no(raiz->dir, id);
     }
 
+    //balanceamento
     if(raiz != NULL){
         raiz->altura = max(avl_altura_no(raiz->esq), avl_altura_no(raiz->dir)) + 1;
         //Verificações de balancemento (caiu na prova)

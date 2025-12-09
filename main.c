@@ -1,6 +1,7 @@
 //Arthur de Castro Dias - 16855302
 //Gabriel Carraro Salzedas - 16827905
 //Kaua Benjamin Trombim Silva - 16830893
+//==== made in ICMC-USP====\\
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,16 +36,14 @@ heap_carregar(triagem, lista_pacientes);
 printf("-------Bem-vindo ao TAD SUS V2!-------\n");
 int op = 0;
 do {
-    // Escolhemos adicionar mais uma opção, "3-Inserir paciente na fila", para o caso de querermos inserir um paciente já cadastrado na lista, sem ter que mudar o funcionamento do TAD lista_paciente.
     printf("\nMenu:\n1-Registrar paciente\n2-Remover paciente\n3-Lista de pacientes\n4-Buscar paciente\n5-Mostrar fila de espera\n6-Dar alta ao paciente\n7-Adiconar procedimento ao histórico\n8-Remover procedimento do histórico\n9-Sair\n");
     printf("Digite a opção desejada: ");
     scanf("%d",&op);
     Paciente *paciente;
 
     char a;
-
     int id;
-    //Executa alguma das ações de aocrdo com a entrada do usuário
+    //Executa alguma das ações de acordo com a entrada do usuário
     switch (op) {
         case 1:
             //Registrar paciente
@@ -144,13 +143,6 @@ do {
             
             printf("->Id do paciente: ");
             scanf("%d",&id);
-            //Busca do paciente na lista para sua remoção
-            paciente = avl_buscar_paciente(lista_pacientes, id);
-            if(paciente == NULL) {
-                printf("ERRO ao procurar paciente!\n");
-                printf("------------SISTEMA DE MORTE------------\n\n");
-                break;
-            }
             //Remoção do paciente da lista
             ok = avl_remover_paciente(lista_pacientes, id);
             if(!ok) {
@@ -190,7 +182,7 @@ do {
             printf("------------FILA DE ESPERA------------\n\n");
             break;
         case 6:
-            //Dar alta
+            //Dar alta, remove o paciente mais prioritário da heap
             NO* removido = heap_remover(triagem);
             if(removido == NULL){
                 printf("Erro ao dar alta ao paciente!\n");
@@ -266,6 +258,8 @@ do {
             printf("------------DESFAZER PROCEDIMENTO DO HISTÓRICO------------\n\n");
             break;
         case 9:
+            //Salva os dados
+            //Nota: se fechar o programa com ^C no terminal os dados não serão salvos
             avl_salvar(lista_pacientes);
             heap_salvar(triagem);
             heap_apagar(&triagem);
