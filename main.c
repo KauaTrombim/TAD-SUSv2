@@ -74,42 +74,14 @@ int main(void) {
                     break;
                 }
                 //Paciente é inserido na fila de triagem para ser atendido
-                char priori[15];
-
-                bool flag = false;
-                int prioridade = -1; //começa invalido
-                while(!flag){
+                int priori; //começa invalido
+                while(priori < 1 || priori > 5){
                     printf("->Digite a prioridade do paciente, \n");
-                    printf("-->Emergencia, Muito urgente, Urgente, Pouco urgente, Nao urgencia: ");
+                    printf("-->1-Nao urgencia, 2-Pouco urgente, 3-Urgente, 4-Muito urgente, 5-Emergencia: ");
 
-                    //fgets(priori, 14, stdin);
-                    //priori[strcspn(priori, "\n")] = '\0';
-                    
-                    if (fgets(priori,15, stdin) != NULL) {
-                        priori[strcspn(priori, "\n")] = '\0'; // Remove o \n
-                    }
-
-                    if(!strcmp(priori, "Emergencia") || !strcmp(priori, "emergencia")){
-                        prioridade = 0;
-                        flag = 1;
-                    }
-                    else if(!strcmp(priori, "Muito urgente") || !strcmp(priori, "muito urgente")){
-                        prioridade = 1;
-                        flag = 1;
-                    }
-                    else if(!strcmp(priori, "Urgente") || !strcmp(priori, "urgente")){
-                        prioridade = 2;
-                        flag = 1;
-                    }
-                    else if(!strcmp(priori, "Pouco urgente") || !strcmp(priori, "pouco urgente")){
-                        prioridade = 3;
-                        flag = 1;
-                    }
-                    else if(!strcmp(priori, "Nao urgencia") || !strcmp(priori, "nao urgencia")){
-                        prioridade = 4;
-                        flag = 1;
-                    }else{
-                        printf("Erro ao interpretar a situação do paciente!\n");
+                    scanf("%d",&priori);
+                    if(priori < 1 || priori > 5){
+                        printf("Prioridade inválida.\n");
                     }
                 }
                 id = paciente_getID(paciente);

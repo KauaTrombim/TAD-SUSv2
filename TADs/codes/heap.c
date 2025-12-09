@@ -93,6 +93,7 @@ NO* heap_remover(Heap *heap){
         return NULL;
     }
     NO* item = heap->arvore[0];
+    paciente_mudar_situacao_fila(heap->arvore[heap->ultimo]->pac, false);
     heap->arvore[0] = heap->arvore[heap->ultimo--];
     heap_fixdown(heap, 0);
     return item;
@@ -145,19 +146,19 @@ void heap_listar(Heap *heap){
     while(!heap_vazia(copia)){
         printf("Id: %d\tPaciente: %s\t", paciente_getID(copia->arvore[0]->pac), paciente_getNome(copia->arvore[0]->pac));
         switch(copia->arvore[0]->situacao){
-            case 0:
+            case 5:
                 printf("Prioridade: Emergência\n");
                 break;
-            case 1:
+            case 4:
                 printf("Prioridade: Muito urgente\n");
                 break;
-            case 2:
+            case 3:
                 printf("Prioridade: Urgente\n");            
                 break;
-            case 3:
+            case 2:
                 printf("Prioridade: Pouco urgente\n");
                 break;
-            case 4:
+            case 1:
                 printf("Prioridade: Não urgente\n");
                 break;
         }
