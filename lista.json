@@ -1,22 +1,14 @@
 [
 	{
-		"id": 1,
-		"nome": "benja",
-		"naFila": 0,
+		"id": 0,
+		"nome": "jao",
+		"naFila": 1,
 		"histórico": {}
 	},
 	{
-		"id": 2,
-		"nome": "laisa",
+		"id": 1,
+		"nome": "amanda",
 		"naFila": 0,
-		"histórico": {
-			"procedimento": "exame de aptidao pro ITA"
-		}
-	},
-	{
-		"id": 3,
-		"nome": "jaja",
-		"naFila": 1,
 		"histórico": {}
 	}
 ]

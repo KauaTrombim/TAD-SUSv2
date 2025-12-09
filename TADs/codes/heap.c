@@ -164,7 +164,8 @@ void heap_listar(Heap *heap){
                 printf("Prioridade: Não urgente\n");
                 break;
         }
-        heap_remover(copia);
+        copia->arvore[0] = copia->arvore[copia->ultimo--];
+        heap_fixdown(copia, 0);
     }
     heap_apagar(&copia);
 }
