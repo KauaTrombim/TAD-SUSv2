@@ -74,7 +74,19 @@ do {
                         printf("Prioridade inválida.\n");
                     }
                 }
-                heap_inserir(triagem, paciente, priori);
+                id = paciente_getID(paciente);
+                if(paciente_naFila(paciente)){
+                    printf("Paciente ja esta registrado na fila!\n");
+                    break;
+                }
+                ok = heap_inserir(triagem, paciente, priori);
+                if(!ok) {
+                    printf("ERRO ao inserir paciente na triagem!\n");
+                    printf("------------REGISTRO DE PACIENTE------------\n\n");
+                    break;
+                }
+                printf("\n->Paciente de ID %d registrado e inserido na fila de espera com sucesso!\n", id);
+                printf("------------REGISTRO DE PACIENTE------------\n\n");
                 break;
             }
             printf("->Insira o nome do paciente (max: 99 caracteres): ");
