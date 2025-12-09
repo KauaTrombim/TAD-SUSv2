@@ -27,7 +27,7 @@ Paciente *paciente_criar(AVL *avl, char *nome, int id) {
         p->id = id;
     }
     strncpy(p->nome, nome, 100);
-    p->naFila = true; //Marca o paciente como na fila já na inserção
+    p->naFila = false; //Marca o paciente como na fila já na inserção
     p->historico = historico_criar();
     return p;
 }
