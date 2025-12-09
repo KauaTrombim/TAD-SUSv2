@@ -329,6 +329,7 @@ void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
     }
 }
 
+// Salva os dados da AVL em um arquivo JSON
 bool avl_salvar(AVL *avl) {
     //Função para salvar os dado ao fim da execução
     if (avl == NULL) return false;
@@ -341,7 +342,7 @@ bool avl_salvar(AVL *avl) {
 
     fprintf(f, "[");
     
-    //fase recursiva
+    // Salvamos recursivamente
     bool primeiro = true;
     salvar_nos_recursivo(avl->raiz, f, &primeiro);
 
@@ -351,46 +352,61 @@ bool avl_salvar(AVL *avl) {
     return true;
 }
 
+// Carrega os dados da AVL a partir do arquivo JSON
 void avl_carregar(AVL *avl) {
-    //Função para carregar os dados salvos
     if (avl != NULL) {
+        // Abrimos o arquivo "lista.json" em modo leitura
         FILE *f = fopen("lista.json", "r");
         if (f == NULL) {
             return;
         }
 
+        // Buffers e variáveis auxiliares para leitura dos dados
         char buffer[256], nome[101], procedimentoTexto[101];
         int id;
         int naFilaInt;
         Paciente *paciente = NULL;
 
-        //Procura pelos dados após as chaves
+        // Lemos o arquivo linha por linha
         while (fgets(buffer, 255, f) != NULL) {
+            // Se encontramos a chave "id", extraímos o ID do paciente
             if (strstr(buffer, "\"id\":")) {
                 sscanf(buffer, "%*[^:]: %d", &id);
             } 
+            // Se encontramos a chave "nome", extraímos o nome do paciente e o criamos no .exe com o nome e ID obtidos
             else if (strstr(buffer, "\"nome\":")) {
                 sscanf(buffer, "%*[^:]: \"%[^\"]", nome);
                 paciente = paciente_criar(avl, nome, id); 
+                // Atualizamos o último ID da árvore caso necessário
                 if(id > avl->ultimoID) {
                     avl->ultimoID = id;
                 }
             }
+            // Caso encontremos a chave "naFila"
             else if (strstr(buffer, "\"naFila\":")) {
+                // Extraímos o valor indicando se está na fila
                 sscanf(buffer, "%*[^:]: %d", &naFilaInt);
                 if (paciente != NULL) {
+                    // Atualizamos a situação do paciente na fila
                     paciente_mudar_situacao_fila(paciente, (naFilaInt == 1));
                 }
             }
+            // Se encontramos a chave "histórico"
             else if (strstr(buffer, "\"histórico\":")) {
                 if(paciente != NULL){
+                    // Continuamos lendo linhas até encontrar o fechamento da chave "}"
                     while (fgets(buffer, 255, f) != NULL && !strstr(buffer, "}")) {
+                        // Procuramos por procedimentos dentro do histórico
                         if (strstr(buffer, "\"procedimento\":")) {
+                            // Extraímos o texto do procedimento
                             sscanf(buffer, "%*[^:]: \"%[^\"]", procedimentoTexto);
+                            // Inserimos o procedimento no histórico do paciente
                             historico_inserir(paciente_gethistorico(paciente), procedimentoTexto);
                         }
                     }
+                    // Invertemos o histórico para manter a ordem correta
                     historico_inverter(paciente_gethistorico(paciente));
+                    // Inserimos o paciente na árvore AVL
                     avl_inserir_paciente(avl, paciente);
                     paciente = NULL;
                 }

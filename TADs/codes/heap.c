@@ -209,17 +209,22 @@ Paciente *no_getPac(NO* item){
     return item->pac;
 }
 
+// Salva os dados da heap em um arquivo de texto
 bool heap_salvar(Heap *heap) {
     if (heap == NULL) {
         return false;
     }
 
+    // Abrimos o arquivo "triagem.txt" em modo escrita
     FILE *arq = fopen("triagem.txt", "w");
     if (arq == NULL) {
         return false;
     }
 
+    // Percorremos todos os elementos da heap até o último índice válido
     for (int i = 0; i <= heap->ultimo; ++i) {
+        // Verificamos se o nó da heap e o paciente associado não são nulos
+        // Em seguida, obtemos seu ID e sua situação e salvamos
         if (heap->arvore[i] != NULL && heap->arvore[i]->pac != NULL) {
             int id = paciente_getID(heap->arvore[i]->pac);
             int situacao = heap->arvore[i]->situacao;
@@ -231,16 +236,22 @@ bool heap_salvar(Heap *heap) {
     return true;
 }
 
+
+// Carrega os dados da heap a partir do arquivo de texto
 bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
+    // Abrimos o arquivo "triagem.txt" em modo leitura
     FILE *arq = fopen("triagem.txt", "r");
     if (arq == NULL) {
         return false;
     }
 
     int id, prioridade;
+    // Lemos ID e prioridade até o fim do arquivo
     while (fscanf(arq, "%d %d", &id, &prioridade) == 2) {
+        // Buscamos o paciente correspondente na árvore AVL usando o ID
         Paciente *p = avl_buscar_paciente(lista_pacientes, id);
         
+        // Se o paciente foi encontrado, inserimos na heap com a prioridade lida
         if (p != NULL) {
             heap_inserir(heap, p, prioridade);
         }
