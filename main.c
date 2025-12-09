@@ -58,7 +58,7 @@ do {
             while(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
                 printf("->Insira o ID do paciente(-1 se for novo paciente): ");
                 scanf("%d", &id);
-                if(id == -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
+                if(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
                     printf("ID digitado inválido!\n");
                 }
             }
