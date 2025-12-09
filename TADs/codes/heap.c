@@ -207,6 +207,7 @@ bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
 
     int id, prioridade;
     while (fscanf(arq, "%d %d", &id, &prioridade) == 2) {
+        printf("%d %d", id, prioridade);
         Paciente *p = avl_buscar_paciente(lista_pacientes, id);
         
         if (p != NULL) {

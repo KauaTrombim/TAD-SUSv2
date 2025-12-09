@@ -53,7 +53,8 @@ do {
             //Entra na triagem de qualquer forma.
             printf("\n------------REGISTRO DE PACIENTE------------\n");
             char nome[100];
-            int id = -2, priori = 0;
+            id = -2;
+            int priori = 0;
             while(id == -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
                 printf("->Insira o ID do paciente(-1 se for novo paciente): ");
                 scanf("%d", &id);
