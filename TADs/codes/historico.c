@@ -166,9 +166,12 @@ void historico_inverter(HISTORICO *historico){
         return;
     }
     //Uso de dois ponteiros auxiliares para
-    HISTORICO *aux = (HISTORICO *)malloc(sizeof(HISTORICO));
-    HISTORICO *aux2 = (HISTORICO*)malloc(sizeof(HISTORICO));
-    if(aux == NULL || aux2==NULL){
+    HISTORICO *aux = historico_criar();
+    if(aux == NULL){
+        return;
+    }
+    HISTORICO *aux2 = historico_criar();
+    if(aux2 == NULL){
         return;
     }
     //Como a cada retirada a quantidade de procedimen tos diminui
@@ -189,8 +192,6 @@ void historico_inverter(HISTORICO *historico){
         historico_inserir(historico, aux2->ultimoProcedimento->texto);
         historico_retirar(aux2);
     }
-    free(aux);
-    aux = NULL;
-    free(aux2);
-    aux2 = NULL;
+    historico_apagar(&aux);
+    historico_apagar(&aux2);
 }
