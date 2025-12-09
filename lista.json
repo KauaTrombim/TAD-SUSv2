@@ -1,14 +1,32 @@
 [
 	{
 		"id": 0,
-		"nome": "jao",
+		"nome": "kaua",
 		"naFila": 1,
-		"histórico": {}
+		"histórico": {
+			"procedimento": "exame de unha",
+			"procedimento": "exame de sangue"
+		}
 	},
 	{
 		"id": 1,
-		"nome": "amanda",
+		"nome": "benja",
 		"naFila": 0,
+		"histórico": {}
+	},
+	{
+		"id": 2,
+		"nome": "bauru",
+		"naFila": 0,
+		"histórico": {
+			"procedimento": "cirurgia bariatrica",
+			"procedimento": "exame de vista"
+		}
+	},
+	{
+		"id": 3,
+		"nome": "paulo",
+		"naFila": 1,
 		"histórico": {}
 	}
 ]
