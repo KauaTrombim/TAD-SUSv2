@@ -11,26 +11,35 @@ struct HEAP{
     int ultimo;
 };
 
+
+//Método de criação da Heap
 Heap *heap_criar(){
     Heap *heap = malloc(sizeof(Heap));
     if(heap != NULL){
+        //Caso inicial, sem ultimos fica -1.
         heap->ultimo = -1;
     }
     return heap;
 }
 
+
+//Método para apagar a Heap
+//Ponteiro para ponteiro para Heap
 void heap_apagar(Heap **heap){
     if(*heap == NULL || heap ==NULL){
         return;
     }
+    //Como cada nó é alocado dinamicamente ele libera todos os existentes.
     for(int i = 0; i<=(*heap)->ultimo; i++){
         free((*heap)->arvore[i]);
         (*heap)->arvore[i] = NULL;
     }
+    //Liberação da estrutura.
     free(*heap);
     *heap = NULL;
 }
 
+//Verificação se a heap está vazia
 bool heap_vazia(Heap *heap){
     if(heap->ultimo == -1){
         return true;
@@ -38,6 +47,7 @@ bool heap_vazia(Heap *heap){
     return false;
 }
 
+//Verificaçaõ se a heap está cheia
 bool heap_cheia(Heap *heap){
     if(heap->ultimo == 99){
         return true;
@@ -45,12 +55,15 @@ bool heap_cheia(Heap *heap){
     return false;
 }
 
+//Pós remoção correção da heap
 void heap_fixdown(Heap *heap, int indice){
     if(heap==NULL){
         return;
     }
     int maior = indice;
+    //Comparação de acordo com a prioridade
     if(2*indice+1 <= heap->ultimo){
+        //Se for a mesma prioridade quem entrou primeiro tem preferência
         if((heap->arvore[2*indice+1]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+1]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+1]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+1;
     }
@@ -58,6 +71,7 @@ void heap_fixdown(Heap *heap, int indice){
         if((heap->arvore[2*indice+2]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[2*indice+2]->horaInsercao,heap->arvore[maior]->horaInsercao) < 0) || heap->arvore[2*indice+2]->situacao > heap->arvore[maior]->situacao)
             maior = 2*indice+2;
     }
+    //Se o maior foi trocado ele passa para o próximo até que o nó encontre sua posição correta
     if(maior!=indice){
         NO* aux = heap->arvore[indice];
         heap->arvore[indice] = heap->arvore[maior];
@@ -66,24 +80,29 @@ void heap_fixdown(Heap *heap, int indice){
     }
 }
 
+//Pós inserção correção da heap
 void heap_fixup(Heap *heap){
     if(heap == NULL){
         return;
     }
     int w = heap->ultimo;
+    //Cálculo do pai
     int maior = (w - 1)/2;
+    //Percorre a árvore subindo até encontrar a parte superior.
     while(w > 0 && (heap->arvore[w]->situacao >= heap->arvore[maior]->situacao)){
         if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0){
-            continue;
+            break;
         }
         NO* aux = heap->arvore[maior];
         heap->arvore[maior] = heap->arvore[w];
         heap->arvore[w] = aux;
         w = maior;
+        //Atualização do pai a cada iteração.
         maior = (maior-1)/2;
     }
 }
 
+//Remoção de nó
 NO* heap_remover(Heap *heap){
     if(heap == NULL){
         return NULL;

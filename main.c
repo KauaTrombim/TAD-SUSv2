@@ -1,7 +1,7 @@
 //Arthur de Castro Dias - 16855302
 //Gabriel Carraro Salzedas - 16827905
 //Kaua Benjamin Trombim Silva - 16830893
-//==== made in ICMC-USP====\\
+//==== made in ICMC-USP====
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
