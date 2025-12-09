@@ -188,7 +188,7 @@ int main(void) {
                     printf("Erro ao dar alta ao paciente!\n");
                     break;
                 }
-                printf("Paciente: %s de ID: %d recebeu alta\n", paciente_getNome(no_getPac(removido)), paciente_getID(removido));
+                printf("Paciente: %s de ID: %d recebeu alta\n", paciente_getNome(no_getPac(removido)), paciente_getID(no_getPac(removido)));
                 //Liberação do nó
                 free(removido);
                 removido = NULL;
