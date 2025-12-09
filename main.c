@@ -41,7 +41,7 @@ int main(void) {
         printf("\nMenu:\n");
         printf("1-Registrar paciente\n");
         printf("2-Remover paciente\n");
-        printf("3-Lista de pacientes\n");
+        printf("3-Listar pacientes\n");
         printf("4-Buscar paciente\n");
         printf("5-Mostrar fila de espera\n");
         printf("6-Dar alta ao paciente\n");

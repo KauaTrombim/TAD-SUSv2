@@ -143,26 +143,6 @@ bool avl_inserir_paciente(AVL *avl, Paciente *p){
     return false;
 }
 
-//poderia ser o min da direita
-void troca_max_esq(NO_AVL *troca, NO_AVL *raiz, NO_AVL *ant){
-    if(troca->dir != NULL){
-        troca_max_esq(troca->dir, raiz, troca);
-        return;
-    }
-    if(raiz == ant){
-        ant->esq = troca->esq;
-    }
-    else{
-        ant->dir = troca->esq;
-    }
-
-    Paciente *p = raiz->paciente;
-    raiz->paciente = troca->paciente;
-    paciente_apagar(&p);
-    free(troca);
-    troca = NULL;
-}
-
 NO_AVL *remover_no(NO_AVL *raiz, int id){
     NO_AVL *p;
     if(raiz == NULL){
@@ -186,7 +166,18 @@ NO_AVL *remover_no(NO_AVL *raiz, int id){
         }
         //caso tenha 2
         else{
-            troca_max_esq(raiz->esq, raiz, (raiz));
+            NO_AVL *novo = raiz->esq;
+            //Busca pelo max da esquerda
+            while(novo->dir != NULL){
+                novo = novo->dir;
+            }
+
+            Paciente *pac = raiz->paciente;
+            raiz->paciente = novo->paciente;
+            novo->paciente = pac;
+
+            raiz->esq = remover_no(raiz->esq, paciente_getID(pac));
+        
         }
     }
     //direciona a recursão
