@@ -55,7 +55,7 @@ do {
             char nome[100];
             id = -2;
             int priori = 0;
-            while(id == -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
+            while(id != -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
                 printf("->Insira o ID do paciente(-1 se for novo paciente): ");
                 scanf("%d", &id);
                 if(id == -1 || avl_buscar_paciente(lista_pacientes, id) != NULL){
