@@ -242,10 +242,10 @@ Paciente *busca(NO_AVL *raiz, int id){
         }
         else{
             if(paciente_getID(raiz->paciente) > id){
-                busca(raiz->dir, id);
+                return busca(raiz->esq, id);
             }
             else{
-                busca(raiz->esq, id);
+                return busca(raiz->dir, id);
             }
         }
     }
