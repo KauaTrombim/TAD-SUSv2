@@ -75,7 +75,6 @@ int main(void) {
                     break;
                 }
                 //Paciente é inserido na fila de triagem para ser atendido
-                char priori[15];
                 int priori; //começa invalido
                 while(priori < 1 || priori > 5){
                     printf("->Digite a prioridade do paciente, \n");
@@ -88,7 +87,7 @@ int main(void) {
                 }
                 id = paciente_getID(paciente);
                 ok = heap_inserir(triagem, paciente, priori);
-                printf("\nentrei\ndeu ok? %d\nprioridade: %d", ok, prioridade);
+                printf("\nentrei\ndeu ok? %d\nprioridade: %d", ok, priori);
                 if(!ok) {
                     printf("ERRO ao inserir paciente na triagem!\n");
                     printf("------------REGISTRO DE PACIENTE------------\n\n");
