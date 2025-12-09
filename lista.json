@@ -3,13 +3,17 @@
 		"id": 0,
 		"nome": "kaua",
 		"naFila": 1,
-		"histórico": {}
+		"histórico": {
+			"procedimento": "adad"
+		}
 	},
 	{
 		"id": 1,
 		"nome": "benja",
 		"naFila": 1,
-		"histórico": {}
+		"histórico": {
+			"procedimento": "1212"
+		}
 	},
 	{
 		"id": 2,
