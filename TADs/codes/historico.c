@@ -192,8 +192,6 @@ void historico_inverter(HISTORICO *historico){
         historico_inserir(historico, aux2->ultimoProcedimento->texto);
         historico_retirar(aux2);
     }
-    free(aux);
-    aux = NULL;
-    free(aux2);
-    aux2 = NULL;
+    historico_apagar(&aux);
+    historico_apagar(&aux2);
 }
