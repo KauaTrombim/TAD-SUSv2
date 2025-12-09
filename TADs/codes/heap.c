@@ -93,6 +93,8 @@ void heap_fixup(Heap *heap){
     int maior = (w - 1)/2;
     //Percorre a árvore subindo até encontrar a parte superior.
     while(w > 0 && (heap->arvore[w]->situacao >= heap->arvore[maior]->situacao)){
+        //Atualização do pai a cada iteração.
+        maior = (maior-1)/2;
         //Preferência para quem entrou primeiro na fila caso as prioridades sejam iguais
         if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0){
             break;
@@ -101,8 +103,6 @@ void heap_fixup(Heap *heap){
         heap->arvore[maior] = heap->arvore[w];
         heap->arvore[w] = aux;
         w = maior;
-        //Atualização do pai a cada iteração.
-        maior = (maior-1)/2;
     }
 }
 
@@ -135,18 +135,9 @@ bool heap_inserir(Heap *heap, Paciente *pac, int priori){
     }
     //Verificação inicial se eles está cheia
     if(heap_cheia(heap)){
-        //Se estiver cheia ele compara a prioridade do último com o novo
-        if(heap->arvore[heap->ultimo]->situacao < priori){
-            //Se o novo tiver maiore prioridade ele troca
-            printf("O paciente: %s de ID: %d foi removido da fila de espera devido a lotação da fila e sua prioridade ser menor.\n", paciente_getNome(heap->arvore[heap->ultimo]->pac), paciente_getID(heap->arvore[heap->ultimo]->pac));
-            paciente_mudar_situacao_fila(heap->arvore[heap->ultimo]->pac, false);
-            free(heap->arvore[heap->ultimo]);
-            heap->ultimo--;
-        }else{
-            //Caso contrário o usuário é avisado da lotação na fila de espera
-            printf("A fila de espera está lotada.\n");
-            return false;
-        }
+        printf("A fila de espera está lotada.\n");
+        return false;
+    
     }
     //Criação do novo nó
     NO* item = malloc(sizeof(NO));
