@@ -14,7 +14,6 @@ struct no_{
 
 struct avl{
     NO_AVL *raiz;
-    int profundidade; //Nunca usada
     int ultimoID; //Tornamos a inserção/criação mais fácil
 };
 
@@ -22,8 +21,7 @@ AVL *avl_criar(){
     AVL *avl = (AVL *) malloc(sizeof(AVL));
     if(avl != NULL){
         avl->raiz = NULL;
-        avl->profundidade = -1; //Convenção
-        avl->ultimoID = -1;
+        avl->ultimoID = 0;
     }
 
     return avl;
@@ -161,11 +159,6 @@ NO_AVL *remover_no(NO_AVL *raiz, int id){
         return NULL;
     }
     else if(id == paciente_getID(raiz->paciente)){
-        //Não podemos remover o paciente ainda esperando
-        if(paciente_naFila(raiz->paciente)){
-            printf("AVL_remover_paciente: Nao e possivel remover um paciente em espera\n");
-            return NULL;
-        }
         p = raiz;
         //Caso tenha 1 ou nenhum filho
         if(raiz->esq == NULL || raiz->dir == NULL){
@@ -217,9 +210,19 @@ NO_AVL *remover_no(NO_AVL *raiz, int id){
 
 bool avl_remover_paciente(AVL *avl, int id){
     if(avl != NULL && id > -1){
+        Paciente *p = avl_buscar_paciente(avl, id);
+        if(p == NULL){
+            printf("avl_remover_paciente: Paciente nao encontrado.\n");
+            return false;
+        }
+        if(paciente_naFila(p)){
+            printf("avl_remover_paciente: Nao e possivel remover um paciente que esta na fila de espera\n");
+            return false;
+        }
         avl->raiz = remover_no(avl->raiz, id);
-        return avl != NULL;
+        return true;
     }
+    printf("avl_remover_paciente: erro ao acessar ponteiro ou id invalido.\n");
     return false;
 }
 
@@ -230,20 +233,6 @@ void listar(NO_AVL *raiz){
         printf("-----------------------\n");
         listar(raiz->dir);
     }
-}
-
-//Lista os pacientes em ordem
-void avl_listar(AVL *avl){
-    if(avl != NULL){
-        listar(avl->raiz);
-    }
-}
-
-int avl_gerar_id(AVL *avl) {
-    if(avl != NULL){
-        return avl->ultimoID + 1; 
-    }
-    return -1;
 }
 
 Paciente *busca(NO_AVL *raiz, int id){
@@ -271,6 +260,19 @@ Paciente *avl_buscar_paciente(AVL *avl, int id){
     return NULL;
 }
 
+//Lista os pacientes em ordem
+void avl_listar(AVL *avl){
+    if(avl != NULL){
+        listar(avl->raiz);
+    }
+}
+
+int avl_gerar_id(AVL *avl) {
+    if(avl != NULL){
+        return avl->ultimoID; 
+    }
+    return -1;
+}
 
 void salvar_nos_recursivo(NO_AVL *raiz, FILE *f, bool *primeiro) {
     if (raiz != NULL) {
