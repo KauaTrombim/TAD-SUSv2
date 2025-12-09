@@ -42,7 +42,6 @@ do {
     Paciente *paciente;
 
     char a;
-    while ((a = getchar()) != '\n' && a != EOF); //consome lixo
 
     int id;
     //Executa alguma das ações de aocrdo com a entrada do usuário
@@ -89,6 +88,7 @@ do {
                 printf("------------REGISTRO DE PACIENTE------------\n\n");
                 break;
             }
+            while ((a = getchar()) != '\n' && a != EOF); //consome lixo
             printf("->Insira o nome do paciente (max: 99 caracteres): ");
             
             if (fgets(nome, sizeof(nome), stdin) != NULL) {
