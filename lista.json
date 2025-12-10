@@ -1,13 +1,5 @@
 [
 	{
-		"id": 0,
-		"nome": "teste1",
-		"naFila": 1,
-		"histórico": {
-			"procedimento": "teste"
-		}
-	},
-	{
 		"id": 1,
 		"nome": "teste1",
 		"naFila": 1,
@@ -21,32 +13,8 @@
 	},
 	{
 		"id": 3,
-		"nome": "teste",
+		"nome": "teste3",
 		"naFila": 1,
-		"histórico": {}
-	},
-	{
-		"id": 4,
-		"nome": "teset4",
-		"naFila": 1,
-		"histórico": {}
-	},
-	{
-		"id": 5,
-		"nome": "testee4",
-		"naFila": 1,
-		"histórico": {}
-	},
-	{
-		"id": 6,
-		"nome": "testee3",
-		"naFila": 1,
-		"histórico": {}
-	},
-	{
-		"id": 7,
-		"nome": "test0",
-		"naFila": 0,
 		"histórico": {}
 	}
 ]

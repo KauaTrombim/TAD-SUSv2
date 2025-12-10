@@ -89,20 +89,35 @@ void heap_fixup(Heap *heap){
         return;
     }
     int w = heap->ultimo;
-    //Cálculo do pai
-    int maior = (w - 1)/2;
     //Percorre a árvore subindo até encontrar a parte superior.
-    while(w > 0 && (heap->arvore[w]->situacao >= heap->arvore[maior]->situacao)){
-        //Atualização do pai a cada iteração.
-        maior = (maior-1)/2;
-        //Preferência para quem entrou primeiro na fila caso as prioridades sejam iguais
-        if(heap->arvore[w]->situacao == heap->arvore[maior]->situacao && difftime(heap->arvore[w]->horaInsercao,heap->arvore[maior]->horaInsercao) > 0){
+    
+    while(w > 0){
+        //Cálculo do pai
+        int maior = (w - 1)/2;
+
+        // Critério 1: Prioridade do Filho > Prioridade do Pai
+        if (heap->arvore[w]->situacao > heap->arvore[maior]->situacao) {
+            NO* aux = heap->arvore[maior];
+            heap->arvore[maior] = heap->arvore[w];
+            heap->arvore[w] = aux;
+            w = maior; // Sobe para o nível do pai
+        }
+        // Critério 2: Prioridades iguais, mas Filho é mais antigo (FIFO)
+        else if (heap->arvore[w]->situacao == heap->arvore[maior]->situacao) {
+            // difftime(A, B) < 0 significa que A é "menor/antes" que B.
+            if (difftime(heap->arvore[w]->horaInsercao, heap->arvore[maior]->horaInsercao) < 0) {
+                NO* aux = heap->arvore[maior];
+                heap->arvore[maior] = heap->arvore[w];
+                heap->arvore[w] = aux;
+                w = maior;
+            } else {
+                // Nesse caso, a ordem está correta (Pai é mais antigo ou igual)
+                break; 
+            }
+        }
+        else {
             break;
         }
-        NO* aux = heap->arvore[maior];
-        heap->arvore[maior] = heap->arvore[w];
-        heap->arvore[w] = aux;
-        w = maior;
     }
 }
 
@@ -198,7 +213,8 @@ void heap_listar(Heap *heap){
         heap_fixdown(copia, 0);
     }
     //Apaga a cópia criada
-    heap_apagar(&copia);
+    free(copia); 
+    copia = NULL;
 }
 
 //Retorna o paciente salvo em um certo nó
@@ -224,11 +240,12 @@ bool heap_salvar(Heap *heap) {
     // Percorremos todos os elementos da heap até o último índice válido
     for (int i = 0; i <= heap->ultimo; ++i) {
         // Verificamos se o nó da heap e o paciente associado não são nulos
-        // Em seguida, obtemos seu ID e sua situação e salvamos
+        // Em seguida, obtemos seu ID, sua situação e sua hora e salvamos
         if (heap->arvore[i] != NULL && heap->arvore[i]->pac != NULL) {
             int id = paciente_getID(heap->arvore[i]->pac);
             int situacao = heap->arvore[i]->situacao;
-            fprintf(arq, "%d %d\n", id, situacao);
+            long hora = (long)heap->arvore[i]->horaInsercao; 
+            fprintf(arq, "%d %d %ld\n", id, situacao, hora);
         }
     }
 
@@ -239,6 +256,9 @@ bool heap_salvar(Heap *heap) {
 
 // Carrega os dados da heap a partir do arquivo de texto
 bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
+    if (heap == NULL) {
+        return false;
+    }
     // Abrimos o arquivo "triagem.txt" em modo leitura
     FILE *arq = fopen("triagem.txt", "r");
     if (arq == NULL) {
@@ -246,14 +266,37 @@ bool heap_carregar(Heap *heap, AVL *lista_pacientes) {
     }
 
     int id, prioridade;
-    // Lemos ID e prioridade até o fim do arquivo
-    while (fscanf(arq, "%d %d", &id, &prioridade) == 2) {
-        // Buscamos o paciente correspondente na árvore AVL usando o ID
+    long hora_lida;
+
+    // Lemos ID, prioridade e hora até o fim do arquivo
+    while (fscanf(arq, "%d %d %ld", &id, &prioridade, &hora_lida) == 3) {
+        
+        // Buscamos o paciente
         Paciente *p = avl_buscar_paciente(lista_pacientes, id);
         
-        // Se o paciente foi encontrado, inserimos na heap com a prioridade lida
         if (p != NULL) {
-            heap_inserir(heap, p, prioridade);
+            if(heap_cheia(heap)){
+                printf("A fila de espera está lotada. Ignorando paciente ID %d.\n", id);
+                continue;
+            }
+
+            // Criação do novo nó (NO)
+            NO* item = malloc(sizeof(NO));
+            if(item == NULL){
+                fclose(arq);
+                return false; 
+            }
+
+            // Atribução de dados
+            item->horaInsercao = (time_t)hora_lida;
+            paciente_mudar_situacao_fila(p, true);
+            item->pac = p;
+            item->situacao = prioridade;
+            
+            // Insere o nó no final da heap e incrementa 'ultimo'
+            heap->arvore[++heap->ultimo] = item;
+            
+            heap_fixup(heap);
         }
     }
 
